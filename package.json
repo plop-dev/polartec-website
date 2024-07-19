@@ -10,9 +10,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^3.2.4"
+    "astro": "^3.2.4",
+    "basicscroll": "^3.0.4",
+    "chalk": "^5.3.0",
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1",
+    "gsap": "^3.12.2",
+    "mongoose": "^7.6.3"
   },
   "devDependencies": {
+    "@types/basicscroll": "^3.0.2",
     "sass": "^1.69.2"
   }
 }

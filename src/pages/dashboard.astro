@@ -1,0 +1,68 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout>
+	<div class='content'>
+		<div class='title'>Home</div>
+	</div>
+</DashboardLayout>
+
+<style lang='scss'>
+	.content {
+		display: grid;
+		grid-template-rows: 15% 85%;
+		height: 100%;
+		width: 100%;
+
+		.title {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 42px;
+		}
+	}
+</style>
+
+<script defer>
+function validateAndSend() {
+	const fileInput = document.getElementById('fileInput');
+	const file = fileInput.files[0];
+	const customMessage = document.getElementById('customMessage').value;
+	const userEmail = document.getElementById('userEmail').value;
+
+	if (file && userEmail) {
+		// Check file size (10MB limit)
+		const maxSize = 10 * 1024 * 1024; // 10MB
+		if (file.size > maxSize) {
+			console.error('File size exceeds the limit (10MB).');
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = event => {
+			const fileData = event.target.result.split(',')[1];
+			const fileName = file.name;
+			const mimeType = file.mimetype;
+			const jsonData = { fileData, fileName, mimeType, userEmail, customMessage };
+
+			fetch('/api/order', {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+				},
+				body: JSON.stringify(jsonData),
+			})
+				.then(response => response.text())
+				.then(data => {
+					console.log('File uploaded successfully. File ID:', data.fileId);
+					// You can handle the file ID as needed
+				})
+				.catch(error => console.error('Error:', error));
+		};
+		reader.readAsDataURL(file);
+	} else {
+		console.error('Please provide a file and your email.');
+	}
+}
+</script>

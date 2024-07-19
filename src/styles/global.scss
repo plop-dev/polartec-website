@@ -1,31 +1,23 @@
 @import url("https://fonts.googleapis.com/css?family=Inter:700|Inter:400");
 
 :root {
-    --linear-gradient: linear-gradient(
-        124deg,
-        rgba(153, 56, 217, 1) 10%,
-        rgba(253, 29, 29, 1) 63%,
-        rgba(252, 176, 69, 1) 100%
-    );
-    --linear-gradient-colours: rgba(153, 56, 217, 1) 10%, rgba(253, 29, 29, 1) 63%, rgba(252, 176, 69, 1) 100%;
-}
-:root[data-theme="light"] {
-    --colour-em: #010403;
-    --colour: #262727;
-    --background: #f4f5f6;
-    --background-light: #cbcfd2;
-    --primary: #8dceba;
-    --secondary: #adf0e5;
-    --accent: #3fab9b;
-}
-:root[data-theme="dark"] {
+    // --linear-gradient: linear-gradient(
+    //     124deg,
+    //     rgba(153, 56, 217, 1) 10%,
+    //     rgba(253, 29, 29, 1) 63%,
+    //     rgba(252, 176, 69, 1) 100%
+    // );
+    // --linear-gradient-colours: rgba(153, 56, 217, 1) 10%, rgba(253, 29, 29, 1) 63%, rgba(252, 176, 69, 1) 100%;
+    --linear-gradient: linear-gradient(120deg, var(--secondary), var(--accent));
+    --linear-gradient-colours: var(--secondary), var(--accent);
     --colour-em: #fbfefd;
     --colour: #d1d1d1;
-    --background: #0a0b0c;
+    --background: #121212;
     --background-light: #2d3134;
-    --primary: #31725e;
-    --secondary: #0f5247;
-    --accent: #54c0af;
+    --background-lighter: #40464b;
+    --primary: #0c1f49;
+    --secondary: #123a74;
+    --accent: #60c2dd;
 }
 
 * {
