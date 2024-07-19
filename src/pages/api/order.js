@@ -1,25 +1,50 @@
+import { EmbedBuilder } from 'discord.js';
 import Order from '../../schemas/order';
-import client from '../../scripts/bot';
+import client from '../../scripts/bot/bot';
 
 export const prerender = false;
 export const POST = async ({ request }) => {
 	const body = await request.json().then(res => res);
-	const { fileData, fileName, mimeType, userEmail, customMessage } = body;
+	const { fileData, fileName, mimeType, userEmail, customMessage, colour, plasticType, layerHeight, infill } = body;
 	const receivedFileBuffer = Buffer.from(fileData, 'base64');
 
-	await Order.create({ userEmail, fileName, file: { data: receivedFileBuffer, contentType: mimeType } });
+	const res = await Order.create({
+		userEmail,
+		customMessage,
+		colour,
+		plasticType,
+		layerHeight,
+		infill,
+		fileName,
+		file: { data: receivedFileBuffer, contentType: mimeType },
+	});
+	console.log(res.then(res => res));
+
+	localStorage.setItem('newOrderID', res.id);
 
 	const orderChannelId = '1164312818770788513'; // testing channel for now
 	try {
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
 		if (channel) {
-			await channel.send({
-				content: `${userEmail} has ordered something!\nMessage: ${customMessage}`,
-				files: [{ attachment: receivedFileBuffer, name: fileName }],
-			});
+			const embed = new EmbedBuilder()
+				.setTitle('New Order')
+				.setDescription(`**${userEmail.split('@')[0]}** has just ordered something!\n`)
+				.addFields(
+					{ name: 'Email', value: userEmail, inline: true },
+					{ name: 'Custom message', value: customMessage == '' ? 'No message provided' : customMessage, inline: true },
+					{ name: 'Colour', value: colour, inline: true },
+					{ name: 'Plastic type', value: plasticType, inline: true },
+					{ name: 'Layer height', value: layerHeight, inline: true },
+					{ name: 'Infill (%)', value: `${infill}%`, inline: true },
+				)
+				.setTimestamp()
+				.setColor([130, 180, 210]);
+
+			await channel.send({ embeds: [embed], files: [{ attachment: receivedFileBuffer, name: fileName }] });
 		}
 	} catch (error) {
 		console.log('An error occured: ' + error.message + '\n' + error);
+		console.log(error);
 	}
 
 	return new Response(null, { status: 200 });

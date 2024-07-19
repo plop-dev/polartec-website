@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import Modal from '../../components/modal.astro';
 
 interface Colours {
 	name: string;
@@ -65,7 +66,7 @@ const availableColoursJSON = JSON.stringify(availableColours);
 					<div class='dropdown-options'>
 						<div class='outline'>
 							<input type='text' readonly />
-							<label>Plastic type</label>
+							<label id='plasticType'>Plastic type</label>
 						</div>
 						<div class='dropdown input-with-dropdown'>
 							<button type='button'></button>
@@ -94,7 +95,7 @@ const availableColoursJSON = JSON.stringify(availableColours);
 					<div class='dropdown-options'>
 						<div class='outline'>
 							<input type='text' readonly />
-							<label>Layer Height</label>
+							<label id='layerHeight'>Layer height</label>
 						</div>
 						<div class='dropdown input-with-dropdown'>
 							<button type='button'></button>
@@ -122,7 +123,7 @@ const availableColoursJSON = JSON.stringify(availableColours);
 					</span>
 					<div class='range'>
 						<div class='range__slider'>
-							<input type='range' />
+							<input id='infillPercentage' type='range' />
 						</div>
 						<div class='range__value'>
 							<span>25%</span>
@@ -131,10 +132,21 @@ const availableColoursJSON = JSON.stringify(availableColours);
 				</div>
 				<div class='buttons'>
 					<a id='prev-page' class='button button-primary button-grey'>Back</a>
-					<a onclick='validateAndSend();' class='button button-primary button-blue'>Order</a>
+					<a id='orderButton' class='button button-primary button-blue'>Order</a>
 				</div>
 			</div>
 		</div>
+		<Modal type='error' id='fillInputsError'>
+			<div class='details-modal-title'>
+				<h1>Error</h1>
+			</div>
+			<div class='details-modal-content'>
+				<p>Make sure you fill in every input on the page before sending the order (except for the 'Custom Message' input).</p>
+			</div>
+			<div class='details-modal-buttons'>
+				<a class='button button-primary button-danger modal-close'>Got it!</a>
+			</div>
+		</Modal>
 	</div>
 </DashboardLayout>
 
@@ -764,46 +776,69 @@ const availableColoursJSON = JSON.stringify(availableColours);
 	});
 	//#endregion
 
-	function validateAndSend() {
+	//#region
+	document.getElementById('orderButton').addEventListener('click', validateAndSend);
+
+	function validateAndSend(event) {
 		const fileInput = document.getElementById('fileInput');
 		const file = fileInput.files[0];
+		const userEmail = document.getElementById('userEmail').value;
 		const customMessage = document.getElementById('customMessage').value;
-		const userEmail = email.value;
+		let colour = '';
 
-		if (file && userEmail) {
-			// Check file size (10MB limit)
-			const maxSize = 10 * 1024 * 1024; // 10MB
-			if (file.size > maxSize) {
-				console.error('File size exceeds the limit (10MB).');
+		document.querySelectorAll('.order .colour-picker .color-checkbox__input').forEach(input => {
+			if (input.checked) {
+				colour = input.nextSibling.classList[0];
 				return;
 			}
+		});
 
-			const reader = new FileReader();
-			reader.onload = event => {
-				const fileData = event.target.result.split(',')[1];
-				const fileName = file.name;
-				const mimeType = file.mimetype;
-				const jsonData = { fileData, fileName, mimeType, userEmail, customMessage };
+		const plasticType = document.getElementById('plasticType').textContent === 'Plastic type' ? null : document.getElementById('plasticType').textContent;
+		const layerHeight = document.getElementById('layerHeight').textContent === 'Layer height' ? null : document.getElementById('layerHeight').textContent;
+		const infill = document.getElementById('infillPercentage').value;
 
-				fetch('/api/order', {
-					method: 'POST',
-					headers: {
-						Accept: 'application/json',
-					},
-					body: JSON.stringify(jsonData),
-				})
-					.then(response => response.text())
-					.then(data => {
-						console.log('File uploaded successfully. File ID:', data.fileId);
-						// You can handle the file ID as needed
+		if (file && userEmail && colour && plasticType && layerHeight && infill) {
+			try {
+				// Check file size (10MB limit)
+				const maxSize = 40 * 1024 * 1024; // 40MB
+				if (file.size > maxSize) {
+					console.error('File size exceeds the limit (40MB).');
+					return;
+				}
+
+				const reader = new FileReader();
+				reader.onload = event => {
+					const fileData = event.target.result.split(',')[1];
+					const fileName = file.name;
+					const mimeType = file.mimetype;
+					const jsonData = { fileData, fileName, mimeType, userEmail, customMessage, colour, plasticType, layerHeight, infill };
+
+					fetch('/api/order', {
+						method: 'POST',
+						headers: {
+							Accept: 'application/json',
+						},
+						body: JSON.stringify(jsonData),
 					})
-					.catch(error => console.error('Error:', error));
-			};
-			reader.readAsDataURL(file);
+						.then(response => response.text())
+						.then(data => {
+							console.log('File sent successfully. File ID:', data.fileId);
+						})
+						.catch(error => console.error('Error:', error));
+				};
+				reader.readAsDataURL(file);
+
+				window.location.pathname = '/dashboard/orders';
+			} catch (error) {
+				console.log('An error occured: ' + error.message + '\n' + error);
+			}
 		} else {
-			console.error('Please provide a file and your email.');
+			showModal('fillInputsError');
 		}
 	}
+	//#endregion
+
+	//#region
 
 	function formatFileSize(bytes, si = false, dp = 1) {
 		const thresh = si ? 1000 : 1024;
@@ -819,6 +854,8 @@ const availableColoursJSON = JSON.stringify(availableColours);
 		} while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
 		return bytes.toFixed(dp) + ' ' + units[u];
 	}
+
+	//#endregion
 
 	//#region
 	const order = document.querySelector('.order');
@@ -848,7 +885,7 @@ const availableColoursJSON = JSON.stringify(availableColours);
 		const containers = document.getElementsByClassName(containerClass);
 
 		function createCheckbox(col, hex, border, checked) {
-			const cl = (border ? 'bordered ' : '') + col;
+			const cl = col + (border ? ' bordered' : '');
 			const id = 'col-' + col;
 			const idLabel = 'col-' + col + '-label';
 
@@ -864,20 +901,20 @@ const availableColoursJSON = JSON.stringify(availableColours);
 			input.classList.add('color-checkbox__input');
 
 			const label = document.createElement('label');
-			label.className = 'color-checkbox ' + cl + (unavailable ? ' unavailable' : ''); // Add the "color-checkbox" class here
+			label.className = cl + ' color-checkbox' + (unavailable ? ' unavailable' : ''); // Add the "color-checkbox" class here
 			label.setAttribute('for', id);
 			label.id = idLabel;
 			label.style.background = hex;
 
-			const tooltip = document.createElement('span');
-			tooltip.classList.add('mdl-tooltip');
-			tooltip.setAttribute('for', idLabel);
-			tooltip.textContent = col;
+			// const tooltip = document.createElement('span');
+			// tooltip.classList.add('mdl-tooltip');
+			// tooltip.setAttribute('for', idLabel);
+			// tooltip.textContent = col;
 
 			for (const container of containers) {
 				container.appendChild(input.cloneNode(true));
 				container.appendChild(label.cloneNode(true));
-				container.appendChild(tooltip.cloneNode(true));
+				// container.appendChild(tooltip.cloneNode(true));
 			}
 		}
 
