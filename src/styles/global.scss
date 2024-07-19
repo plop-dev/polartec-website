@@ -5,6 +5,7 @@
     --linear-gradient-colours: var(--secondary), var(--accent);
     --colour-em: #f0f0f0;
     --colour: #d1d1d1;
+    --colour-grey: #726e6a;
     --background: #121212;
     --background-light: #2d3134;
     --background-lighter: #40464b;
@@ -12,10 +13,14 @@
     --secondary: #123a74;
     --accent: #60c2dd;
 
+    --blue: #2182b3;
+    --blue-darker: #11648e;
     --green: #2ba972;
     --orange: #e28446;
     --grey: #727a8a;
     --red: #dd2433;
+
+    color-scheme: dark;
 }
 
 * {
@@ -24,6 +29,18 @@
     padding: 0;
     margin: 0;
     scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    background-color: var(--background-light);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--background-lighter);
 }
 
 body {
@@ -42,7 +59,7 @@ a {
 }
 .button {
     --button-colour: #000;
-    padding: 12px 30px;
+    padding: 10px 28px;
     border-radius: 6px;
     border: 3px solid transparent;
     transition: 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);

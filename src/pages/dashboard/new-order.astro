@@ -1,5 +1,22 @@
 ---
+export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
+
+interface Colours {
+	name: string;
+	hex: string;
+	blackBorder?: boolean;
+	default?: boolean;
+	unavailable?: boolean;
+}
+const availableColours: Colours[] = [
+	{ name: 'Grey', hex: '#7F7F7F', unavailable: true },
+	{ name: 'White', hex: '#fff', default: true, blackBorder: true },
+	{ name: 'Purple', hex: '#673ab7' },
+	{ name: 'Green', hex: '#2ba972', unavailable: true },
+	{ name: 'Blue', hex: '#2182b3', unavailable: true },
+];
+const availableColoursJSON = JSON.stringify(availableColours);
 ---
 
 <DashboardLayout title='New Order' sideBarPos={2}>
@@ -8,9 +25,9 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 			<h1 class='title'>New Order</h1>
 		</div>
 		<div class='order'>
-			<form action=''>
+			<div class='basic'>
 				<div class='email input-gradient'>
-					<input type='email' id='userEmail' placeholder="What's your email?" />
+					<input type='email' class='gradient' id='userEmail' placeholder="What's your email?" required />
 					<div id='anim'>
 						<span class='tooltip' data-tooltip='Enter a valid email.'>!</span>
 					</div>
@@ -18,34 +35,130 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 				<div class='custom-message input-gradient'>
 					<textarea id='customMessage' placeholder='Enter a message here (optional):'></textarea>
 				</div>
-				<div class='file'></div>
-			</form>
+				<div class='file input-gradient'>
+					<label for='fileInput' id='drop-area'>
+						<input class='gradient' type='file' id='fileInput' accept='.stl, .obj, .3mf' hidden />
+						<div class='controls'>
+							<div class='uploaded'>
+								<h3>Uploaded <span></span></h3>
+								<p></p>
+							</div>
+
+							<img src='/images/upload.svg' />
+							<p>Drag and drop your .STL, .OBJ or .3MF<br />file here</p>
+							<strong>or</strong>
+							<a class='button button-primary button-blue'>Click here</a>
+						</div>
+					</label>
+				</div>
+				<div class='buttons'>
+					<a id='next-page' class='button button-primary button-blue next-page'>Next</a>
+				</div>
+			</div>
+			<div class='advanced'>
+				<div class='colour-picker input-gradient'>
+					<span class='colour-title'>Choose the plastic colour</span>
+					<div class='color-checkboxes'></div>
+				</div>
+				<div class='plastic-type dropdown-input input-gradient'>
+					<span class='dropdown-title'>Choose the plastic type</span>
+					<div class='dropdown-options'>
+						<div class='outline'>
+							<input type='text' readonly />
+							<label>Plastic type</label>
+						</div>
+						<div class='dropdown input-with-dropdown'>
+							<button type='button'></button>
+							<ul class='dropdown-menu'>
+								<li>
+									<a class='dropdown-item outline-none' data-value='PLA'
+										>PLA <span class='d-block text-muted small lh-sm'>Durable, lightweight and cheap</span></a
+									>
+								</li>
+								<li>
+									<a class='dropdown-item outline-none' data-value='PETG'
+										>PETG <span class='d-block text-muted small lh-sm'>something idk</span></a
+									>
+								</li>
+								<li>
+									<a class='dropdown-item outline-none' data-value='another plastic'
+										>another plastic <span class='d-block text-muted small lh-sm'>some description</span></a
+									>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class='layer-height dropdown-input input-gradient'>
+					<span class='dropdown-title'>Choose the layer height</span>
+					<div class='dropdown-options'>
+						<div class='outline'>
+							<input type='text' readonly />
+							<label>Layer Height</label>
+						</div>
+						<div class='dropdown input-with-dropdown'>
+							<button type='button'></button>
+							<ul class='dropdown-menu'>
+								<li>
+									<a class='dropdown-item outline-none' data-value='0.12mm'>0.12mm</a>
+								</li>
+								<li>
+									<a class='dropdown-item outline-none' data-value='0.2mm'>0.2mm</a>
+								</li>
+								<li>
+									<a class='dropdown-item outline-none' data-value='0.28mm'>0.28mm</a>
+								</li>
+								<li>
+									<a class='dropdown-item outline-none' data-value='0.32mm'>0.32mm</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class='infill range-slider input-gradient'>
+					<span class='range-header'>Choose the infill percentage</span>
+					<div class='range'>
+						<div class='range__slider'>
+							<input type='range' />
+						</div>
+						<div class='range__value'>
+							<span>34%</span>
+						</div>
+					</div>
+				</div>
+				<div class='buttons'>
+					<a id='prev-page' class='button button-primary button-grey'>Back</a>
+					<a onclick='validateAndSend();' class='button button-primary button-blue'>Order</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </DashboardLayout>
 
-<style lang='scss'>
+<style lang='scss' is:global>
 	.content {
 		padding: 16px;
 		display: flex;
 		flex-direction: column;
-		gap: 64px;
-		height: calc(100% - 32px);
+		gap: 24px;
+		height: auto;
 		width: calc(100% - 32px);
+		overflow-x: hidden;
 
 		.header {
 			display: flex;
 			align-items: center;
-			height: 8%;
+			height: 12dvh;
 
 			.title {
-				color: var(--colour-em);
 				display: flex;
 				align-items: center;
+				justify-content: center;
+				width: 100%;
 				font-size: 32px;
 				padding: 0 4px;
 				margin: 0;
-				font-weight: 700;
+				font-weight: 400;
 				line-height: 32px;
 			}
 
@@ -59,131 +172,441 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 		.order {
 			width: auto;
 			height: auto;
-			overflow: hidden;
+			overflow-x: hidden;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
 			align-items: center;
+			scroll-snap-type: y mandatory;
 
-			.input-gradient {
-				position: relative;
+			.basic,
+			.advanced {
+				height: calc(100vh - 24px - 32px - 8vh);
+				min-height: calc(100vh - 24px - 32px - 8vh);
+				width: 100%;
 				display: flex;
-				flex-direction: row;
-				width: 40vw;
-				max-width: 40vw;
-				margin: 0 auto;
-				border-radius: 6px;
-				padding: 1.4rem 2rem 1.6rem;
-				background: var(--background-light);
+				flex-direction: column;
+				align-items: center;
+				scroll-snap-align: center;
+			}
 
-				&:after {
-					content: '';
-					position: absolute;
-					left: 0px;
-					right: 0px;
-					bottom: 0px;
-					z-index: 100;
-					height: 2px;
-					background-position: 0% 0%;
-					background: linear-gradient(to right, var(--secondary), var(--green), var(--accent), var(--green), var(--secondary), var(--green));
-					background-size: 500% auto;
-					animation: gradient 3s linear infinite;
+			.basic {
+				.buttons {
+					display: flex;
+					align-items: center;
+					gap: 32px;
+					position: relative;
+					top: 6vh;
+				}
+			}
+
+			.advanced {
+				height: calc(100vh - 8vh);
+				min-height: calc(100vh - 8vh);
+				padding-top: 5vh;
+
+				.buttons {
+					display: flex;
+					align-items: center;
+					gap: 32px;
+					position: relative;
+					top: 8vh;
 				}
 
-				input {
-					flex-grow: 1;
-					color: var(--colour);
-					font-size: 20px;
-					line-height: 18px;
-					vertical-align: middle;
-					background: transparent;
-				}
+				.colour-picker {
+					display: flex;
+					flex-direction: column;
+					gap: 24px;
+					justify-content: center;
 
-				#anim {
-					cursor: pointer;
-					&:hover {
-						animation: shake 0.5s ease-in-out forwards;
-					}
-
-					.tooltip {
-						top: 5px;
-						left: 20px;
-						position: relative;
-						background-color: var(--red);
-						padding: 4px 11px;
-						margin: 5px;
-						font-size: 16px;
-						border-radius: 50%;
-						color: var(--colour);
-
-						&::before,
-						&::after {
-							position: absolute;
-							content: '';
-							opacity: 0;
-							transition: all 0.4s ease-in-out;
-						}
-
-						&::before {
-							border-width: 8px 10px 8px 8px;
-							border-style: solid;
-							border-color: transparent var(--red) transparent transparent;
-							left: 33px;
-							top: 7px;
-						}
-
-						&::after {
-							content: attr(data-tooltip);
-							background: var(--red);
-							width: 120px;
-							height: 40px;
-							font-size: 13px;
-							font-weight: 300;
-							top: -15px;
-							left: 50px;
-							padding: 10px;
-							border-radius: 6px;
-							letter-spacing: 1px;
-						}
-
-						&:hover::before,
-						&:hover::after {
-							opacity: 1;
-							transform: translateY(-2px);
-						}
-
-						@keyframes shake {
-							0% {
-								transform: rotate(2deg);
-							}
-							50% {
-								transform: rotate(-3deg);
-							}
-							70% {
-								transform: rotate(3deg);
-							}
-							100% {
-								transform: rotate(0deg);
-							}
-						}
-					}
-				}
-
-				&.custom-message {
-					height: 180px;
-					border-radius: 0;
-
-					textarea {
-						background-color: transparent;
-						border: 0;
-						outline: 0;
-						resize: none;
-						width: 100%;
-						max-width: 100%;
-						max-height: 180px;
-						color: var(--colour);
+					.colour-title {
+						text-align: center;
 						font-size: 20px;
 					}
+				}
+
+				.dropdown-input {
+					display: flex;
+					flex-direction: column;
+					gap: 24px;
+					justify-content: center;
+
+					.dropdown-title {
+						text-align: center;
+						font-size: 20px;
+					}
+					.dropdown-options {
+						.outline {
+							position: relative;
+							width: 100%;
+							border-radius: 6px;
+
+							input {
+								background-color: var(--background-lighter);
+								cursor: pointer;
+								min-height: auto;
+								padding: 8px 0 8px 0;
+								border: 0;
+								transition: all 0.2s linear;
+								display: block;
+								width: 100%;
+								font-size: 18px;
+								appearance: none;
+								border-radius: 6px;
+							}
+							label {
+								position: absolute;
+								top: 0;
+								max-width: 100%;
+								white-space: nowrap;
+								overflow: hidden;
+								text-overflow: ellipsis;
+								left: 10px;
+								padding-top: 10px;
+								pointer-events: none;
+								transform-origin: 0 0;
+								transition: all 0.2s ease-in-out;
+								margin-bottom: 0;
+								display: inline-block;
+								font-size: 18px;
+							}
+						}
+
+						.dropdown {
+							position: relative;
+
+							button {
+								display: none;
+								white-space: nowrap;
+							}
+
+							ul {
+								transition: 0.2s ease-in-out;
+								border-radius: 6px;
+								padding-top: 0;
+								padding-bottom: 0;
+								border: 0;
+								list-style: none;
+								background-clip: padding-box;
+								position: absolute;
+								background-color: var(--background-light);
+								z-index: 1000;
+								opacity: 0;
+
+								li {
+									cursor: default;
+									font-size: 18px;
+									padding: 6px 12px;
+									transition: 0.2s ease-in-out;
+
+									&:first-child {
+										padding-top: 12px;
+										border-top-right-radius: 6px;
+										border-top-left-radius: 6px;
+									}
+
+									span {
+										color: var(--colour-grey);
+										line-height: 1.25 !important;
+										display: block;
+										font-size: 17px;
+									}
+
+									&:last-child {
+										border-bottom-right-radius: 6px;
+										border-bottom-left-radius: 6px;
+									}
+
+									&:hover {
+										background-color: var(--background-lighter);
+									}
+								}
+							}
+						}
+					}
+				}
+
+				.range-slider {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					gap: 32px;
+
+					.range-header {
+						text-align: center;
+						font-size: 20px;
+					}
+
+					input::-moz-focus-inner,
+					input::-moz-focus-outer {
+						border: 0;
+					}
+
+					.range {
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						width: 100%;
+
+						.range__value {
+							width: 20%;
+							height: 200%;
+							margin-left: 45px;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							border-left: var(--grey) 1px solid;
+
+							span {
+								font-size: 19px;
+							}
+						}
+
+						.range__slider {
+							width: 70%;
+
+							label {
+								margin-bottom: 10px;
+							}
+
+							& [type='range'] {
+								width: 100%;
+								-webkit-appearance: none;
+								height: 13px;
+								border-radius: 6px;
+								background: var(--colour);
+								outline: none;
+								padding: 0;
+								margin: 0;
+							}
+
+							& [type='range']::-webkit-slider-thumb {
+								-webkit-appearance: none;
+								appearance: none;
+								width: 25px;
+								height: 25px;
+								border-radius: 50%;
+								background: var(--blue);
+								cursor: pointer;
+								-webkit-transition: background 0.15s ease-in-out;
+								transition: background 0.15s ease-in-out;
+							}
+
+							& [type='range']::-webkit-slider-thumb:hover {
+								background-color: var(--blue-darker);
+							}
+
+							& [type='range']::-moz-range-thumb {
+								width: 20px;
+								height: 20px;
+								border: 0;
+								border-radius: 50%;
+								background: var(--blue);
+								cursor: pointer;
+								-webkit-transition: background 0.15s ease-in-out;
+								transition: background 0.15s ease-in-out;
+							}
+
+							& [type='range']::-moz-range-thumb:hover {
+								background-color: var(--blue-darker);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.input-gradient {
+			position: relative;
+			display: flex;
+			flex-direction: row;
+			width: 40vw;
+			max-width: 40vw;
+			border-radius: 6px;
+			padding: 1.4rem 2rem 1.6rem;
+			background: var(--background-light);
+
+			&:after {
+				content: '';
+				position: absolute;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				z-index: 100;
+				height: 2px;
+				background-position: 0% 0%;
+				background: linear-gradient(to right, var(--secondary), var(--green), var(--accent), var(--green), var(--secondary), var(--green));
+				background-size: 500% auto;
+				animation: gradient 3s linear infinite;
+			}
+
+			input.gradient {
+				flex-grow: 1;
+				color: var(--colour);
+				font-size: 20px;
+				line-height: 18px;
+				vertical-align: middle;
+				background: transparent;
+			}
+
+			#anim {
+				cursor: pointer;
+				&:hover {
+					animation: shake 0.5s ease-in-out forwards;
+				}
+
+				.tooltip {
+					top: 5px;
+					left: 20px;
+					position: relative;
+					background-color: var(--red);
+					padding: 4px 11px;
+					margin: 5px;
+					font-size: 16px;
+					border-radius: 50%;
+					color: var(--colour);
+
+					&::before,
+					&::after {
+						position: absolute;
+						content: '';
+						opacity: 0;
+						transition: all 0.4s ease-in-out;
+					}
+
+					&::before {
+						border-width: 8px 10px 8px 8px;
+						border-style: solid;
+						border-color: transparent var(--red) transparent transparent;
+						left: 33px;
+						top: 7px;
+					}
+
+					&::after {
+						content: attr(data-tooltip);
+						background: var(--red);
+						width: 120px;
+						height: 40px;
+						font-size: 13px;
+						font-weight: 300;
+						top: -15px;
+						left: 50px;
+						padding: 10px;
+						border-radius: 6px;
+						letter-spacing: 1px;
+					}
+
+					&:hover::before,
+					&:hover::after {
+						opacity: 1;
+						transform: translateY(-2px);
+					}
+
+					@keyframes shake {
+						0% {
+							transform: rotate(2deg);
+						}
+						50% {
+							transform: rotate(-3deg);
+						}
+						70% {
+							transform: rotate(3deg);
+						}
+						100% {
+							transform: rotate(0deg);
+						}
+					}
+				}
+			}
+
+			&.custom-message {
+				height: 170px;
+				border-radius: 0;
+
+				textarea {
+					background-color: transparent;
+					border: 0;
+					outline: 0;
+					resize: none;
+					width: 100%;
+					max-width: 100%;
+					max-height: 180px;
+					color: var(--colour);
+					font-size: 20px;
+				}
+			}
+
+			&.file {
+				border-top-right-radius: 0;
+				border-top-left-radius: 0;
+				font-size: 18px;
+
+				.controls {
+					position: relative;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					flex-direction: column;
+					gap: 12px;
+					width: 100%;
+					height: 100%;
+
+					img {
+						height: 48px;
+						width: auto;
+						filter: invert(89%) sepia(0%) saturate(1264%) hue-rotate(159deg) brightness(96%) contrast(89%);
+					}
+
+					p,
+					strong {
+						font-weight: 300;
+						font-size: 20px;
+					}
+
+					strong {
+						color: var(--colour-grey);
+					}
+
+					.uploaded {
+						// display: flex;
+						// flex-direction: column;
+						display: none;
+						background-color: var(--background-light);
+						border-radius: 6px;
+						z-index: 100;
+						position: absolute;
+						font-size: 20px;
+						height: 100%;
+						width: 100%;
+
+						h3 {
+							position: relative;
+							top: 7%;
+
+							span {
+								color: var(--accent);
+							}
+						}
+
+						p {
+							position: relative;
+							top: 12%;
+						}
+					}
+				}
+
+				#drop-area {
+					cursor: pointer;
+					width: 100%;
+					height: 280px;
+					padding: 8px;
+					border-radius: 6px;
+					text-align: center;
+					border: 2px dashed var(--background-lighter);
+				}
+
+				&::after {
+					display: none;
 				}
 			}
 		}
@@ -197,67 +620,378 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 			background-position: 100% 0;
 		}
 	}
+
+	.color-checkboxes {
+		place-self: center;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 16px;
+	}
+	.color-checkbox {
+		width: 32px;
+		height: 32px;
+		box-sizing: border-box;
+		// margin-right: 16px;
+		// margin-bottom: 16px;
+		position: relative;
+
+		border-radius: 50%;
+
+		transition: transform 0.1s linear;
+
+		&.bordered {
+			box-shadow: 0 0 0 2px #f0f0f0 inset;
+
+			&::after {
+				border-color: black;
+			}
+		}
+
+		&.unavailable {
+			filter: grayscale(0.4) opacity(0.3);
+
+			&::before {
+				content: '';
+				position: absolute;
+				background-color: var(--colour);
+				width: 2px;
+				left: 16px;
+				top: 1px;
+				border: none;
+				height: 31px;
+				transform: rotateZ(45deg);
+			}
+		}
+
+		&::after {
+			content: '';
+			display: block;
+			width: calc(16px / 2.4);
+			height: calc(16px / 1.2);
+			position: absolute;
+			top: calc(16px / 2.66);
+			left: calc(16px / 1.33);
+
+			border: 2px solid white;
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+			opacity: 0;
+
+			transition: opacity 0.1s;
+		}
+
+		&:hover,
+		.color-checkbox__input:focus + & {
+			transform: scale(1.2);
+		}
+
+		.color-checkbox__input:checked + & {
+			&::after {
+				opacity: 1;
+			}
+		}
+	}
+	.color-checkbox__input {
+		visibility: hidden;
+		width: 0;
+		pointer-events: none;
+		position: absolute;
+	}
 </style>
 
-<script defer>
-const email = document.getElementById('userEmail');
-const errorTooltip = document.querySelector('#anim .tooltip');
-const form = document.querySelector('form');
+<script defer define:vars={{ availableColoursRAW: availableColoursJSON }}>
+	//#region
+	const email = document.getElementById('userEmail');
+	const errorTooltip = document.querySelector('#anim .tooltip');
+	const form = document.querySelector('form');
 
-email.addEventListener('input', event => {
-	if (email.value) {
-		const regexMatch = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value);
-		if (regexMatch) {
-			errorTooltip.setAttribute('data-tooltip', '');
-			errorTooltip.style.opacity = 0;
+	email.addEventListener('input', event => {
+		if (email.value) {
+			const regexMatch = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value);
+			if (regexMatch) {
+				errorTooltip.setAttribute('data-tooltip', '');
+				errorTooltip.style.opacity = 0;
+			} else {
+				errorTooltip.style.opacity = 1;
+				errorTooltip.setAttribute('data-tooltip', 'Email is invalid.');
+			}
 		} else {
 			errorTooltip.style.opacity = 1;
-			errorTooltip.setAttribute('data-tooltip', 'Email is invalid.');
+			errorTooltip.setAttribute('data-tooltip', 'Enter a valid email.');
 		}
-	} else {
-		errorTooltip.style.opacity = 1;
-		errorTooltip.setAttribute('data-tooltip', 'Enter a valid email.');
+	});
+	//#endregion
+
+	//#region
+	const dropArea = document.getElementById('drop-area');
+	const inputFile = document.getElementById('fileInput');
+
+	inputFile.addEventListener('change', upload);
+
+	function upload(event) {
+		let uploaded = document.querySelector('.controls .uploaded');
+		let uploadedText = document.querySelector('.controls .uploaded h3 span');
+		let uploadedDescription = document.querySelector('.controls .uploaded p');
+		let uploadedFiles = inputFile.files;
+		uploaded.style.display = 'block';
+		uploadedText.textContent = uploadedFiles[0].name;
+		console.log(uploadedFiles[0]);
+		uploadedDescription.textContent = `Size: ${formatFileSize(uploadedFiles[0].size, false, 2)} (${uploadedFiles[0].size} bytes)`;
 	}
-});
+	dropArea.addEventListener('dragover', event => {
+		event.preventDefault();
+	});
+	dropArea.addEventListener('drop', event => {
+		event.preventDefault();
+		inputFile.files = event.dataTransfer.files;
+	});
+	//#endregion
 
-function validateAndSend() {
-	const fileInput = document.getElementById('fileInput');
-	const file = fileInput.files[0];
-	const customMessage = document.getElementById('customMessage').value;
-	const userEmail = email.value;
+	function validateAndSend() {
+		const fileInput = document.getElementById('fileInput');
+		const file = fileInput.files[0];
+		const customMessage = document.getElementById('customMessage').value;
+		const userEmail = email.value;
 
-	if (file && userEmail) {
-		// Check file size (10MB limit)
-		const maxSize = 10 * 1024 * 1024; // 10MB
-		if (file.size > maxSize) {
-			console.error('File size exceeds the limit (10MB).');
-			return;
-		}
+		if (file && userEmail) {
+			// Check file size (10MB limit)
+			const maxSize = 10 * 1024 * 1024; // 10MB
+			if (file.size > maxSize) {
+				console.error('File size exceeds the limit (10MB).');
+				return;
+			}
 
-		const reader = new FileReader();
-		reader.onload = event => {
-			const fileData = event.target.result.split(',')[1];
-			const fileName = file.name;
-			const mimeType = file.mimetype;
-			const jsonData = { fileData, fileName, mimeType, userEmail, customMessage };
+			const reader = new FileReader();
+			reader.onload = event => {
+				const fileData = event.target.result.split(',')[1];
+				const fileName = file.name;
+				const mimeType = file.mimetype;
+				const jsonData = { fileData, fileName, mimeType, userEmail, customMessage };
 
-			fetch('/api/order', {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-				},
-				body: JSON.stringify(jsonData),
-			})
-				.then(response => response.text())
-				.then(data => {
-					console.log('File uploaded successfully. File ID:', data.fileId);
-					// You can handle the file ID as needed
+				fetch('/api/order', {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+					},
+					body: JSON.stringify(jsonData),
 				})
-				.catch(error => console.error('Error:', error));
-		};
-		reader.readAsDataURL(file);
-	} else {
-		console.error('Please provide a file and your email.');
+					.then(response => response.text())
+					.then(data => {
+						console.log('File uploaded successfully. File ID:', data.fileId);
+						// You can handle the file ID as needed
+					})
+					.catch(error => console.error('Error:', error));
+			};
+			reader.readAsDataURL(file);
+		} else {
+			console.error('Please provide a file and your email.');
+		}
 	}
-}
+
+	function formatFileSize(bytes, si = false, dp = 1) {
+		const thresh = si ? 1000 : 1024;
+		if (Math.abs(bytes) < thresh) {
+			return bytes + ' B';
+		}
+		const units = si ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+		let u = -1;
+		const r = 10 ** dp;
+		do {
+			bytes /= thresh;
+			++u;
+		} while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+		return bytes.toFixed(dp) + ' ' + units[u];
+	}
+
+	//#region
+	document.getElementById('next-page').addEventListener('click', next);
+	document.getElementById('prev-page').addEventListener('click', prev);
+	function next() {
+		document.querySelector('.order').scrollBy({ top: 200, behavior: 'smooth' });
+	}
+	function prev() {
+		document.querySelector('.order').scrollBy({ top: -200, behavior: 'smooth' });
+	}
+	//#endregion
+
+	//#region
+	function createColorCheckbox(containerClass, col, hex, border, checked, unavailable) {
+		const containers = document.getElementsByClassName(containerClass);
+
+		function createCheckbox(col, hex, border, checked) {
+			const cl = (border ? 'bordered ' : '') + col;
+			const id = 'col-' + col;
+			const idLabel = 'col-' + col + '-label';
+
+			const input = document.createElement('input');
+			if (unavailable) input.disabled = true;
+			input.type = 'radio';
+			input.id = id;
+			input.value = hex ? hex : '#bababa';
+			input.name = 'colour';
+			if (checked) {
+				input.checked = true;
+			}
+			input.classList.add('color-checkbox__input');
+
+			const label = document.createElement('label');
+			label.className = 'color-checkbox ' + cl + (unavailable ? ' unavailable' : ''); // Add the "color-checkbox" class here
+			label.setAttribute('for', id);
+			label.id = idLabel;
+			label.style.background = hex;
+
+			const tooltip = document.createElement('span');
+			tooltip.classList.add('mdl-tooltip');
+			tooltip.setAttribute('for', idLabel);
+			tooltip.textContent = col;
+
+			for (const container of containers) {
+				container.appendChild(input.cloneNode(true));
+				container.appendChild(label.cloneNode(true));
+				container.appendChild(tooltip.cloneNode(true));
+			}
+		}
+
+		createCheckbox(col, hex, border, checked);
+	}
+
+	let availableColours = JSON.parse(availableColoursRAW);
+	for (let i = 0; i < availableColours.length; i++) {
+		const colour = availableColours[i];
+		createColorCheckbox('color-checkboxes', colour['name'], colour['hex'], colour['blackBorder'], colour['default'], colour['unavailable']);
+	}
+	//#endregion
+
+	//#region
+	const dropdowns = document.querySelectorAll('.dropdown-input');
+
+	function show(dropdown) {
+		const dropdownItems = dropdown.querySelectorAll('.dropdown-menu .dropdown-item');
+		const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+		const myInput = dropdown.querySelector('input');
+
+		dropdownItems.forEach(item => {
+			item.style.cursor = 'pointer';
+			setTimeout(() => {
+				item.style.display = 'block';
+			}, 200);
+		});
+
+		dropdownMenu.style.opacity = '1';
+	}
+
+	function hide(dropdown) {
+		const dropdownItems = dropdown.querySelectorAll('.dropdown-menu .dropdown-item');
+		const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+
+		dropdownItems.forEach(item => {
+			item.style.cursor = 'default';
+			setTimeout(() => {
+				item.style.display = 'none';
+			}, 200);
+		});
+
+		dropdownMenu.style.opacity = '0';
+	}
+
+	function isOutside(element, dropdown) {
+		const myInput = dropdown.querySelector('input');
+		const dropdownItems = dropdown.querySelectorAll('.dropdown-menu .dropdown-item');
+
+		if (element === myInput || element === dropdown) return false;
+
+		dropdownItems.forEach(item => {
+			if (element === item) return false;
+		});
+
+		return true;
+	}
+
+	function handleClickOutside(e, dropdown) {
+		const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+
+		if (dropdownMenu.style.opacity === '1' && isOutside(e.target, dropdown)) {
+			hide(dropdown);
+		}
+	}
+
+	function handleClick(event, item, dropdown) {
+		const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+		const label = dropdown.querySelector('label');
+
+		if (dropdownMenu.style.opacity === '1') {
+			label.textContent = item.getAttribute('data-value');
+		}
+	}
+
+	dropdowns.forEach(dropdown => {
+		const myInput = dropdown.querySelector('input');
+		const dropdownItems = dropdown.querySelectorAll('.dropdown-menu .dropdown-item');
+
+		myInput.addEventListener('click', () => show(dropdown));
+		window.addEventListener('click', event => handleClickOutside(event, dropdown));
+
+		dropdownItems.forEach(item => {
+			item.addEventListener('click', event => handleClick(event, item, dropdown));
+		});
+	});
+
+	//#endregion
+
+	//#region
+	class RangeSlider {
+		constructor(rangeElement, valueElement, options) {
+			this.rangeElement = rangeElement;
+			this.valueElement = valueElement;
+			this.options = options;
+
+			// Attach a listener to "change" event
+			this.rangeElement.addEventListener('input', this.updateSlider.bind(this));
+		}
+
+		// Initialize the slider
+		init() {
+			this.rangeElement.setAttribute('min', options.min);
+			this.rangeElement.setAttribute('max', options.max);
+			this.rangeElement.value = options.cur;
+
+			this.updateSlider();
+		}
+
+		// Format the money
+		asMoney(value) {
+			return '$' + parseFloat(value).toLocaleString('en-US', { maximumFractionDigits: 2 });
+		}
+
+		generateBackground(rangeElement) {
+			if (this.rangeElement.value === this.options.min) {
+				return;
+			}
+
+			let percentage = ((this.rangeElement.value - this.options.min) / (this.options.max - this.options.min)) * 100;
+			return 'background: linear-gradient(to right, var(--blue), var(--blue) ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
+		}
+
+		updateSlider(newValue) {
+			this.valueElement.innerHTML = this.rangeElement.value + '%';
+			this.rangeElement.style = this.generateBackground(this.rangeElement.value);
+		}
+	}
+
+	let rangeElement = document.querySelector('.range [type="range"]');
+	let valueElement = document.querySelector('.range .range__value span');
+
+	let options = {
+		min: 1,
+		max: 100,
+		cur: 25,
+	};
+
+	if (rangeElement) {
+		let slider = new RangeSlider(rangeElement, valueElement, options);
+
+		slider.init();
+	}
+	//#endregion
 </script>

@@ -45,30 +45,30 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 		width: calc(100% - 32px);
 
 		.header {
-			height: 8%;
+			height: 12dvh;
 			display: flex;
 			align-items: center;
 
 			.title {
-				color: var(--colour-em);
 				display: flex;
 				align-items: center;
+				justify-content: center;
+				width: 100%;
 				font-size: 32px;
 				padding: 0 4px;
 				margin: 0;
-				font-weight: 700;
+				font-weight: 400;
 				line-height: 32px;
 			}
 
 			.actions {
-				display: flex;
-				justify-content: end;
-				flex-grow: 1;
+				position: fixed;
+				right: 16px;
 			}
 		}
 
 		.list {
-			height: auto;
+			height: 100%;
 			width: 100%;
 			max-width: 100%;
 			overflow: auto;

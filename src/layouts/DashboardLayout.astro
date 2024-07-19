@@ -32,7 +32,7 @@ switch (sideBarPos) {
 	<main>
 		<div class='sidebar'>
 			<div class='logo' transition:persist>
-				<div class='icon'><img src='/images/OIG_trim.png' /></div>
+				<img src='/images/OIG_trim.png' />
 				<span>PolarTec</span>
 			</div>
 			<ul class='list'>
@@ -125,31 +125,31 @@ switch (sideBarPos) {
 		justify-content: stretch;
 		background-color: var(--background-light);
 		height: 100%;
-		min-width: 230px;
+		min-width: 240px;
+		max-width: 240px;
 
 		.logo {
 			display: flex;
+			justify-content: center;
+			padding: 10px 0;
 			align-items: center;
 			gap: 16px;
-			margin: 16px;
+			width: 100%;
+			border-bottom: 2px solid var(--background-lighter);
 
-			.icon {
-				width: fit-content;
-				height: fit-content;
-
-				img {
-					width: 56px;
-					height: auto;
-				}
+			img {
+				width: 56px;
+				height: auto;
 			}
 
 			span {
-				font-size: 24px;
+				font-size: 22px;
 				font-weight: 200;
 			}
 		}
 
 		.list {
+			margin-top: 10px;
 			flex-grow: 1;
 			display: flex;
 			flex-direction: column;
@@ -160,6 +160,7 @@ switch (sideBarPos) {
 				position: relative;
 				margin-bottom: 8px;
 				transition: 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+				max-width: 240px;
 
 				svg {
 					margin-right: 8px;
@@ -169,7 +170,7 @@ switch (sideBarPos) {
 				a {
 					display: flex;
 					align-items: center;
-					width: 100%;
+					max-width: 240px;
 					padding: 10px 16px;
 					text-decoration: none;
 					font-size: 16px;

@@ -18,23 +18,26 @@ import '../../scripts/email';
 <style lang='scss'>
 	.content {
 		padding: 16px;
-		display: grid;
-		grid-template-rows: 5% 85%;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
 		height: calc(100% - 32px);
 		width: calc(100% - 32px);
 
 		.header {
 			display: flex;
 			align-items: center;
+			height: 12dvh;
 
 			.title {
-				color: var(--colour-em);
 				display: flex;
 				align-items: center;
+				justify-content: center;
+				width: 100%;
 				font-size: 32px;
 				padding: 0 4px;
 				margin: 0;
-				font-weight: 700;
+				font-weight: 400;
 				line-height: 32px;
 			}
 
