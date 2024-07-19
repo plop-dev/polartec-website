@@ -12,12 +12,22 @@ interface Order {
 }
 
 const res = await fetch(Astro.url.origin + '/api/orders', { method: 'POST', headers: { Accept: 'application/json' } });
-const orders: Order[] = await res?.json();
+const resJSON = await res.json();
+
+let orders: Order[] = [];
+
+if (Boolean(resJSON.orders)) {
+	orders = resJSON;
+}
 
 function capitaliseFirstLetter(string: string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 ---
+
+<script define:vars={{ redirect: resJSON.redirect }}>
+	if (redirect) window.location.href = '/auth/login';
+</script>
 
 <DashboardLayout title='Orders' sideBarPos={1}>
 	<div class='content'>
@@ -38,18 +48,24 @@ function capitaliseFirstLetter(string: string) {
 			</div>
 			<div class='items'>
 				{
-					orders.map(order => (
-						<div class='item'>
-							<div>{order.fileName.split('.')[0]}</div>
-							<div>{order.plasticType.toUpperCase()}</div>
-							<div class='colour'>{order.colour}</div>
-							<div>
-								<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>{capitaliseFirstLetter(order.status)}</span>
-							</div>
-							<div>{new Date(order.dateOrdered).toLocaleDateString()}</div>
-							<div>{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}</div>
-						</div>
-					))
+					orders.length >= 1
+						? orders.map(order => (
+								<div class='item'>
+									<div>{order.fileName.split('.')[0]}</div>
+									<div>{order.plasticType.toUpperCase()}</div>
+									<div class='colour'>{order.colour}</div>
+									<div>
+										<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>
+											{capitaliseFirstLetter(order.status)}
+										</span>
+									</div>
+									<div>{new Date(order.dateOrdered).toLocaleDateString()}</div>
+									<div>
+										{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}
+									</div>
+								</div>
+						  ))
+						: ''
 				}
 			</div>
 		</div>
@@ -57,13 +73,12 @@ function capitaliseFirstLetter(string: string) {
 </DashboardLayout>
 
 <script>
-	import * as globalScript from '../../scripts/global';
 	document.addEventListener('DOMContentLoaded', event => {
 		if (localStorage.getItem('reloaded') !== 'true') {
-			globalScript.startLoad();
+			startLoad();
 			setTimeout(() => {
 				window.location.reload();
-				globalScript.stopLoad();
+				stopLoad();
 			}, 1000);
 		}
 		localStorage.setItem('reloaded', 'true');

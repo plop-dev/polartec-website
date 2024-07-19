@@ -28,17 +28,27 @@ switch (sideBarPos) {
 		break;
 }
 
+let rgx: any;
+let initials: any;
+
+const userId = Astro.cookies.get('userId').value.split('*SID-')[0];
 const res = await fetch(Astro.url.origin + '/api/auth/userLoggedIn', {
 	method: 'POST',
 	headers: { Accept: 'application/json' },
-	body: JSON.stringify({ userId: Astro.cookies.get('userId').value.split('*SID-')[0] }),
+	body: JSON.stringify({ userId }),
 });
 const user = await res.json();
 
-let rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
-let initials: any = [...user.displayName.matchAll(rgx)] || [];
-initials = ((initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')).toUpperCase();
+if (!user.redirect) {
+	rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+	initials = [...user.displayName.matchAll(rgx)] || [];
+	initials = ((initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')).toUpperCase();
+}
 ---
+
+<script define:vars={{ redirect: user.redirect }}>
+	if (redirect) window.location.href = '/auth/login';
+</script>
 
 <Layout title={title}>
 	<main>

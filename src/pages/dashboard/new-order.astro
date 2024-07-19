@@ -3,14 +3,14 @@ export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import Modal from '../../components/modal.astro';
 
-interface Colours {
+interface Colour {
 	name: string;
 	hex: string;
 	blackBorder?: boolean;
 	default?: boolean;
 	unavailable?: boolean;
 }
-const availableColours: Colours[] = [
+const availableColours: Colour[] = [
 	{ name: 'Grey', hex: '#7F7F7F', unavailable: true },
 	{ name: 'White', hex: '#fff', default: true, blackBorder: true },
 	{ name: 'Purple', hex: '#673ab7' },

@@ -1,9 +1,39 @@
 ---
 export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-import '../../scripts/bot/bot';
-import '../../scripts/bot/mongoose';
-import '../../scripts/bot/email';
+import Order from '../../schemas/order';
+
+interface Colour {
+	name: string;
+	hex: string;
+	blackBorder?: boolean;
+	default?: boolean;
+	unavailable?: boolean;
+}
+const availableColours: Colour[] = [
+	{ name: 'Grey', hex: 'rgba(127,127,127,0.8)', unavailable: true },
+	{ name: 'White', hex: 'rgba(250, 250, 250, 0.8)', default: true, blackBorder: true },
+	{ name: 'Purple', hex: 'rgba(103, 58, 183, 0.7)' },
+	{ name: 'Green', hex: 'rgba(43, 169, 114, 0.7)', unavailable: true },
+	{ name: 'Blue', hex: 'rgba(33, 130, 179, 0.7)', unavailable: true },
+];
+
+interface Plastic {
+	name: string;
+	unavailable?: boolean;
+}
+const availablePlastics: Plastic[] = [{ name: 'PLA' }, { name: 'PTEG', unavailable: true }];
+
+interface Order {
+	fileName: string;
+	plasticType: string;
+	colour: string;
+	status: string;
+	dateOrdered: Date;
+	price: any;
+}
+const orders: Order[] = await Order.find({ userId: Astro.cookies.get('userId').value.split('*SID-')[0] });
+const recentOrder: Order = orders[0];
 ---
 
 <DashboardLayout title='Dashboard' sideBarPos={0}>
@@ -11,6 +41,73 @@ import '../../scripts/bot/email';
 		<div class='header'>
 			<h1 class='title'>Home</h1>
 			<div class='actions'></div>
+		</div>
+		<div class='sections'>
+			<section>
+				<div class='section-header'>New Order</div>
+				<div class='section-content'>
+					<div class='option'>
+						<h1>Available Colours</h1>
+						<ul class='available-colours'>
+							{
+								availableColours.map(colour => (
+									<li data-colour={colour.hex} class:list={[colour.unavailable ? 'unavailable' : '', colour.blackBorder ? 'black-text' : '']}>
+										{colour.name}
+									</li>
+								))
+							}
+						</ul>
+					</div>
+					<div class='option'>
+						<h1>Available Plastics</h1>
+						<ul>
+							{availablePlastics.map(plastic => <li class:list={[plastic.unavailable ? 'unavailable' : '']}>{plastic.name}</li>)}
+						</ul>
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<div class='section-header'>Orders</div>
+				<div class='section-content'>
+					<div class='recent'>
+						<h2>Recent Order</h2>
+						{
+							recentOrder ? (
+								<div class='order-card' onclick="window.location.pathname = '/dashboard/orders'">
+									<h3>{recentOrder.fileName.split('.')[0]}</h3>
+									<div class='details'>
+										<span>{recentOrder.fileName.split('.')[1].toUpperCase()}</span>
+										<span>{recentOrder.plasticType.toUpperCase()}</span>
+										<span>{recentOrder.colour}</span>
+										<span>{recentOrder.dateOrdered.toLocaleDateString()}</span>
+									</div>
+								</div>
+							) : (
+								<div id='noRecent'>
+									You haven't ordered yet!<span>Order now</span>
+								</div>
+							)
+						}
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<div class='section-header'>Support</div>
+				<div class='section-content'>
+					<div class='contact-options'>
+						<div class='contact-email'>
+							<h3>Contact us by email at</h3>
+							<span>Contact.PolarTec@gmail.com</span>
+						</div>
+						<div class='contact-discord'>
+							<h3>Contact us on discord</h3>
+							<span>plop_dev <strong>or</strong> itsarctic</span>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 	</div>
 </DashboardLayout>
@@ -47,5 +144,154 @@ import '../../scripts/bot/email';
 				flex-grow: 1;
 			}
 		}
+
+		.sections {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			align-items: center;
+			justify-content: center;
+			width: calc(100% - 48px);
+			height: calc(calc(100% - 48px) / 1.5);
+			gap: 36px;
+			padding: 24px;
+			margin: auto 0;
+			overflow: hidden;
+
+			@media (max-width: 1200px) {
+				grid-template-columns: auto;
+				grid-template-rows: 1fr 1fr 1fr;
+				margin: 0;
+				height: auto;
+				overflow-y: scroll;
+
+				section {
+					min-height: 50vh;
+					min-width: 60vw;
+				}
+			}
+
+			section {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				border-radius: 6px;
+				border: 4px solid var(--background-light);
+				height: 100%;
+				gap: 24px;
+
+				.section-header {
+					font-size: 24px;
+					text-align: center;
+					font-weight: 600;
+					padding: 12px 0;
+				}
+
+				.section-content {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					gap: 24px;
+
+					.option {
+						h1 {
+							font-size: 22px;
+							font-weight: 400;
+							margin-bottom: 16px;
+						}
+
+						ul {
+							list-style: none;
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+							gap: 8px;
+
+							li {
+								font-size: 17px;
+								border-radius: 6px;
+								padding: 4px 8px;
+								background-color: var(--background-light);
+
+								&.black-text {
+									color: #2a2a2a;
+								}
+
+								&.unavailable {
+									filter: grayscale(0.4) opacity(0.4);
+								}
+							}
+						}
+					}
+
+					.recent {
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						align-items: center;
+						gap: 16px;
+
+						.order-card {
+							border-radius: 6px;
+							box-sizing: border-box;
+							background-color: var(--background-light);
+							border: 3px solid transparent;
+							cursor: pointer;
+							transition: 0.3s ease-in-out;
+							padding: 16px;
+
+							.details {
+								margin-top: 8px;
+								display: grid;
+								place-items: center;
+								grid-template-columns: 1fr 1fr;
+								grid-template-rows: 1fr 1fr;
+								gap: 8px;
+							}
+
+							&:hover {
+								background-color: transparent;
+								border: 3px solid var(--background-light);
+							}
+						}
+
+						#noRecent {
+							font-size: 22px;
+							font-weight: 600;
+							text-align: center;
+						}
+					}
+
+					.contact-options {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+						gap: 32px;
+
+						& > div {
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+							gap: 8px;
+
+							span {
+								color: var(--accent);
+							}
+
+							&:first-child {
+								padding-bottom: 32px;
+								border-bottom: 2px solid var(--background-lighter);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 </style>
+
+<script>
+	document.querySelectorAll('ul.available-colours li').forEach((colour: HTMLElement) => {
+		colour.style.backgroundColor = colour.getAttribute('data-colour');
+	});
+</script>

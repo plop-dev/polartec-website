@@ -20,8 +20,6 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 </AuthLayout>
 
 <script>
-	import * as globalScript from '../../scripts/global';
-
 	document.querySelector('[data-login]').addEventListener('click', event => {
 		const userId = (document.getElementById('userId') as HTMLInputElement).value;
 		const password = (document.getElementById('userPassword') as HTMLInputElement).value;
@@ -31,7 +29,7 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 			try {
 				const jsonData = { userId, password };
 
-				globalScript.startLoad();
+				startLoad();
 				const data = fetch('/api/auth/login', {
 					method: 'POST',
 					headers: {
@@ -42,7 +40,7 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 					.then(res => res.json())
 					.then(data => {
 						setTimeout(() => {
-							globalScript.stopLoad();
+							stopLoad();
 							if (data.errorMessage) {
 								document.getElementById('error-msg').textContent = data.errorMessage;
 							} else if (data.success) {

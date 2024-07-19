@@ -38,8 +38,6 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 </Modal>
 
 <script>
-	import * as globalScript from '../../scripts/global';
-
 	document.querySelector('.display-name input').addEventListener('input', event => {
 		if ((event.target as HTMLInputElement).value.length <= 1 || (event.target as HTMLInputElement).value.length >= 25) {
 			(event.target as HTMLElement).classList.add('invalid');
@@ -76,7 +74,7 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 			try {
 				const jsonData = { displayName, uniqueName, email, password };
 
-				globalScript.startLoad();
+				startLoad();
 				const data = fetch('/api/auth/signup', {
 					method: 'POST',
 					headers: {
@@ -87,12 +85,12 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 					.then(res => res.json())
 					.then(data => {
 						setTimeout(() => {
-							globalScript.stopLoad();
+							stopLoad();
 							if (data.errorMessage) {
 								document.getElementById('error-msg').textContent = data.errorMessage;
 							} else if (data.success) {
 								// show modal success
-								globalScript.showModal('signupSuccess');
+								showModal('signupSuccess');
 							}
 						}, 1000);
 					});

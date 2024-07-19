@@ -43,18 +43,17 @@ switch (type) {
 </div>
 
 <script>
-	import * as globalScript from '../scripts/global';
 	const id = document.querySelector('.details-modal').getAttribute('id');
 
 	if (document.querySelector('.details-modal-close')) {
 		document.querySelector('.details-modal-close').addEventListener('click', event => {
-			globalScript.hideModal(id);
+			hideModal(id);
 		});
 	}
 	Array.from(document.querySelector('.details-modal-buttons').children)
 		.find(button => button.classList.contains('modal-close'))
 		.addEventListener('click', event => {
-			globalScript.hideModal(id);
+			hideModal(id);
 		});
 </script>
 
