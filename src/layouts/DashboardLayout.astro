@@ -1,5 +1,6 @@
 ---
-import { ViewTransitions, slide } from 'astro:transitions';
+export const prerender = false;
+import { ViewTransitions } from 'astro:transitions';
 import Layout from './Layout.astro';
 interface Props {
 	title: string;
@@ -26,6 +27,17 @@ switch (sideBarPos) {
 	default:
 		break;
 }
+
+const res = await fetch(Astro.url.origin + '/api/auth/userLoggedIn', {
+	method: 'POST',
+	headers: { Accept: 'application/json' },
+	body: JSON.stringify({ userId: Astro.cookies.get('userId').value.split('*SID-')[0] }),
+});
+const user = await res.json();
+
+let rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+let initials: any = [...user.displayName.matchAll(rgx)] || [];
+initials = ((initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')).toUpperCase();
 ---
 
 <Layout title={title}>
@@ -88,8 +100,8 @@ switch (sideBarPos) {
 			</ul>
 
 			<div class='account' transition:persist>
-				<div class='pfp'><img src='/images/OIG_trim.png' /></div>
-				<div class='name'>PolarTec</div>
+				<div class='pfp'>{initials}</div>
+				<div class='name'>{user.displayName}</div>
 				<a class='info' href='/settings'>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
@@ -200,7 +212,6 @@ switch (sideBarPos) {
 			border-top: 2px solid var(--background-lighter);
 			display: flex;
 			align-items: center;
-			justify-content: center;
 			width: 100%;
 			height: 60px;
 			gap: 20px;
@@ -208,13 +219,14 @@ switch (sideBarPos) {
 
 			.pfp {
 				display: flex;
-				height: fit-content;
-				width: fit-content;
-
-				img {
-					height: 40px;
-					width: auto;
-				}
+				height: 40px;
+				aspect-ratio: 1/1;
+				justify-content: center;
+				align-items: center;
+				font-size: 17px;
+				border-radius: 50%;
+				background-color: rgba(120, 89, 230, 1);
+				margin-left: 10%;
 			}
 
 			.name {
@@ -228,6 +240,9 @@ switch (sideBarPos) {
 				cursor: pointer;
 				display: flex;
 				align-items: center;
+				justify-content: flex-end;
+				flex: 1;
+				margin-right: 10%;
 			}
 		}
 	}

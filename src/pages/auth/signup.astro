@@ -40,6 +40,16 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 <script>
 	import * as globalScript from '../../scripts/global';
 
+	document.querySelector('.display-name input').addEventListener('input', event => {
+		if ((event.target as HTMLInputElement).value.length <= 1 || (event.target as HTMLInputElement).value.length >= 25) {
+			(event.target as HTMLElement).classList.add('invalid');
+			document.getElementById('error-msg').textContent = 'Display names must be between 2 and 25 characters long.';
+		} else {
+			(event.target as HTMLElement).classList.remove('invalid');
+			document.getElementById('error-msg').textContent = '';
+		}
+	});
+
 	document.querySelector('.unique-name input').addEventListener('input', event => {
 		let value = (event.target as HTMLInputElement).value;
 		(event.target as HTMLInputElement).value = value.split(' ').join('-');
@@ -54,13 +64,14 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 	});
 
 	document.querySelector('[data-signup]').addEventListener('click', event => {
+		const isDisplayNameValid = !document.querySelector('.display-name').classList.contains('invalid');
 		const displayName = (document.getElementById('userDisplayName') as HTMLInputElement).value;
 		const isUniqueNameValid = !document.querySelector('.unique-name').classList.contains('invalid');
 		const uniqueName = (document.getElementById('userUniqueName') as HTMLInputElement).value;
 		const email = (document.getElementById('userEmail') as HTMLInputElement).value;
 		const password = (document.getElementById('userPassword') as HTMLInputElement).value;
 
-		if (displayName && isUniqueNameValid && email && password) {
+		if (isDisplayNameValid && isUniqueNameValid && email && password) {
 			document.getElementById('error-msg').textContent = '';
 			try {
 				const jsonData = { displayName, uniqueName, email, password };

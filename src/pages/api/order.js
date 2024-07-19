@@ -6,7 +6,7 @@ export const prerender = false;
 export const POST = async ({ request, cookies }) => {
 	const body = await request.json().then(res => res);
 	const { fileData, fileName, mimeType, userEmail, customMessage, colour, plasticType, layerHeight, infill } = body;
-	const userId = cookies.get('id').value;
+	const userId = cookies.get('userId').value.split('*SID-')[0];
 	const receivedFileBuffer = Buffer.from(fileData, 'base64');
 
 	const res = await Order.create({

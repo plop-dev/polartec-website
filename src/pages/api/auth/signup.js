@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import User from '../../../schemas/user';
+import randomId from '../../../tools/randomId';
 
 async function hashPassword(password) {
 	try {
@@ -12,7 +13,7 @@ async function hashPassword(password) {
 }
 
 export const prerender = false;
-export const POST = async ({ request }) => {
+export const POST = async ({ request, cookies }) => {
 	const body = await request.json().then(res => res);
 	// console.log(body);
 	const { displayName, uniqueName, email, password } = body;
@@ -34,6 +35,8 @@ export const POST = async ({ request }) => {
 				email,
 				password: hashedPassword,
 			});
+			const rid = randomId();
+			cookies.set('userId', `${newUser.id}*SID-${rid}`, { sameSite: 'lax', path: '/' });
 			console.log('account created\nname:', displayName, 'email:', email);
 
 			return new Response(JSON.stringify({ success: true }), {

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from '../../../schemas/user';
 import { AstroCookies } from 'astro';
+import randomId from '../../../tools/randomId';
 
 export const prerender = false;
 export const POST = async ({ request, cookies }) => {
@@ -27,7 +28,8 @@ export const POST = async ({ request, cookies }) => {
 	}
 
 	if (await bcrypt.compare(password, user.password)) {
-		cookies.set('id', user.id, { sameSite: 'none', secure: true, path: '/' });
+		const rid = randomId();
+		cookies.set('userId', `${user.id}*SID-${rid}`, { sameSite: 'lax', path: '/' });
 
 		return new Response(JSON.stringify({ success: true }), {
 			headers: { 'Content-Type': 'application/json' },
