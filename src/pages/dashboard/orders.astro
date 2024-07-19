@@ -11,12 +11,16 @@ interface Order {
 	price: any;
 }
 
-const res = await fetch(Astro.url.origin + '/api/orders', { method: 'POST', headers: { Accept: 'application/json' } });
+const res = await fetch(Astro.url.origin + '/api/orders', {
+	method: 'POST',
+	headers: { Accept: 'application/json' },
+	body: JSON.stringify(Astro.locals.user),
+});
 const resJSON = await res.json();
 
 let orders: Order[] = [];
 
-if (Boolean(resJSON.orders)) {
+if (!resJSON.none) {
 	orders = resJSON;
 }
 
@@ -48,24 +52,22 @@ function capitaliseFirstLetter(string: string) {
 			</div>
 			<div class='items'>
 				{
-					orders.length >= 1
-						? orders.map(order => (
-								<div class='item'>
-									<div>{order.fileName.split('.')[0]}</div>
-									<div>{order.plasticType.toUpperCase()}</div>
-									<div class='colour'>{order.colour}</div>
-									<div>
-										<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>
-											{capitaliseFirstLetter(order.status)}
-										</span>
-									</div>
-									<div>{new Date(order.dateOrdered).toLocaleDateString()}</div>
-									<div>
-										{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}
-									</div>
+					orders.length >= 1 ? (
+						orders.map(order => (
+							<div class='item'>
+								<div>{order.fileName.split('.')[0]}</div>
+								<div>{order.plasticType.toUpperCase()}</div>
+								<div class='colour'>{order.colour}</div>
+								<div>
+									<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>{capitaliseFirstLetter(order.status)}</span>
 								</div>
-						  ))
-						: ''
+								<div>{new Date(order.dateOrdered).toLocaleDateString()}</div>
+								<div>{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}</div>
+							</div>
+						))
+					) : (
+						<div id='no-orders'>You haven't ordered anything yet!</div>
+					)
 				}
 			</div>
 		</div>
@@ -122,6 +124,12 @@ function capitaliseFirstLetter(string: string) {
 			width: 100%;
 			max-width: 100%;
 			overflow: auto;
+
+			#no-orders {
+				text-align: center;
+				font-size: 22px;
+				padding: 32px 0;
+			}
 
 			.column-list {
 				display: flex;

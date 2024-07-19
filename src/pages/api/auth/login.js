@@ -29,7 +29,7 @@ export const POST = async ({ request, cookies }) => {
 
 	if (await bcrypt.compare(password, user.password)) {
 		const rid = randomId();
-		cookies.set('userId', `${user.id}*SID-${rid}`, { sameSite: 'lax', path: '/' });
+		cookies.set('userId', `${user.id}*SID-${rid}`, { sameSite: 'lax', path: '/', secure: false });
 
 		return new Response(JSON.stringify({ success: true }), {
 			headers: { 'Content-Type': 'application/json' },

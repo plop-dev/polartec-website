@@ -42,14 +42,13 @@ const orderSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	file: {
-		data: Buffer,
-		contentType: String,
-	},
 	status: {
 		type: String,
 		default: 'Order sent',
 		required: true,
+	},
+	fileLink: {
+		type: String,
 	},
 });
 

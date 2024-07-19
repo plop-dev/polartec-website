@@ -36,7 +36,7 @@ export const POST = async ({ request, cookies }) => {
 				password: hashedPassword,
 			});
 			const rid = randomId();
-			cookies.set('userId', `${newUser.id}*SID-${rid}`, { sameSite: 'lax', path: '/' });
+			cookies.set('userId', `${newUser.id}*SID-${rid}`, { sameSite: 'lax', path: '/', secure: false });
 			console.log('account created\nname:', displayName, 'email:', email);
 
 			return new Response(JSON.stringify({ success: true }), {

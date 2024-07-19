@@ -31,15 +31,9 @@ switch (sideBarPos) {
 let rgx: any;
 let initials: any;
 
-const userId = Astro.cookies.get('userId').value.split('*SID-')[0];
-const res = await fetch(Astro.url.origin + '/api/auth/userLoggedIn', {
-	method: 'POST',
-	headers: { Accept: 'application/json' },
-	body: JSON.stringify({ userId }),
-});
-const user = await res.json();
+const { user } = Astro.locals;
 
-if (!user.redirect) {
+if (!user?.redirect) {
 	rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
 	initials = [...user.displayName.matchAll(rgx)] || [];
 	initials = ((initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')).toUpperCase();
@@ -112,7 +106,7 @@ if (!user.redirect) {
 			<div class='account' transition:persist>
 				<div class='pfp'>{initials}</div>
 				<div class='name'>{user.displayName}</div>
-				<a class='info' href='/settings'>
+				<!-- <a class='info' href='/settings'>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
 						width='24'
@@ -126,7 +120,7 @@ if (!user.redirect) {
 						class='feather feather-more-horizontal'
 						><circle cx='12' cy='12' r='1'></circle><circle cx='19' cy='12' r='1'></circle><circle cx='5' cy='12' r='1'></circle></svg
 					>
-				</a>
+				</a> -->
 			</div>
 		</div>
 		<slot />

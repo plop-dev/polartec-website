@@ -18,6 +18,8 @@ const availableColours: Colour[] = [
 	{ name: 'Blue', hex: '#2182b3', unavailable: true },
 ];
 const availableColoursJSON = JSON.stringify(availableColours);
+
+const { user } = Astro.locals;
 ---
 
 <DashboardLayout title='New Order' sideBarPos={2}>
@@ -28,7 +30,7 @@ const availableColoursJSON = JSON.stringify(availableColours);
 		<div class='order'>
 			<div class='basic'>
 				<div class='email input-gradient'>
-					<input type='email' class='gradient' id='userEmail' placeholder='Enter your email:' required />
+					<input type='email' class='gradient' id='userEmail' placeholder='Enter your email:' value={user.email} required />
 					<div id='anim'>
 						<span class='tooltip' data-tooltip='Enter a valid email.'>!</span>
 					</div>

@@ -9,18 +9,6 @@ export const POST = async ({ request, cookies }) => {
 	const userId = cookies.get('userId').value.split('*SID-')[0];
 	const receivedFileBuffer = Buffer.from(fileData, 'base64');
 
-	const res = await Order.create({
-		userId,
-		userEmail,
-		customMessage,
-		colour,
-		plasticType,
-		layerHeight,
-		infill,
-		fileName,
-		file: { data: receivedFileBuffer, contentType: mimeType },
-	});
-
 	const orderChannelId = '1164312818770788513'; // testing channel for now
 	try {
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
@@ -39,7 +27,21 @@ export const POST = async ({ request, cookies }) => {
 				.setTimestamp()
 				.setColor([130, 180, 210]);
 
-			await channel.send({ embeds: [embed], files: [{ attachment: receivedFileBuffer, name: fileName }] });
+			const message = await channel.send({ embeds: [embed], files: [{ attachment: receivedFileBuffer, name: fileName }] });
+
+			const fileLink = message.attachments.first().url;
+
+			const res = await Order.create({
+				userId,
+				userEmail,
+				customMessage,
+				colour,
+				plasticType,
+				layerHeight,
+				infill,
+				fileName,
+				fileLink,
+			});
 		}
 	} catch (error) {
 		console.log('An error occured: ' + error.message + '\n' + error);

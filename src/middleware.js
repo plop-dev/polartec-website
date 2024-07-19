@@ -1,5 +1,6 @@
 import { Types as MongooseTypes } from 'mongoose';
 const ObjectId = MongooseTypes.ObjectId;
+import User from './schemas/user';
 
 function isObjectIdValid(id) {
 	if (ObjectId.isValid(id)) {
@@ -21,7 +22,19 @@ export const onRequest = async ({ cookies, locals, url }, next, pattern = /dashb
 			if (userId) isValidUserId = isObjectIdValid(userId);
 
 			if (isValidUserId) {
-				return next();
+				const user = await User.findOne({ _id: userId });
+				if (user) {
+					locals.user = user;
+					locals.user.redirect = false;
+					return next();
+				} else {
+					return new Response(null, {
+						status: 302,
+						headers: {
+							Location: '/auth/login',
+						},
+					});
+				}
 			} else {
 				return new Response(null, {
 					status: 302,
