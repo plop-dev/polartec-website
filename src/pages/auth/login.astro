@@ -1,0 +1,66 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+---
+
+<AuthLayout title='Login'>
+	<div class='header'>Welcome <span class='text-gradient'>Back</span></div>
+	<div id='error-msg'></div>
+	<div class='content'>
+		<div class='unique-name input-cle'>
+			<input type='text' class='gradient' id='userId' placeholder='Enter your email or unique name: ' required />
+		</div>
+		<div class='password input-cle'>
+			<input type='password' class='gradient' id='userPassword' placeholder='Enter a secure password: ' required />
+		</div>
+	</div>
+	<div class='actions'>
+		<a href='/auth/signup' class='button button-secondary button-grey'>Sign Up</a>
+		<a data-login class='button button-primary button-blue'>Login</a>
+	</div>
+</AuthLayout>
+
+<script>
+	import * as globalScript from '../../scripts/global';
+
+	document.querySelector('[data-login]').addEventListener('click', event => {
+		const userId = (document.getElementById('userId') as HTMLInputElement).value;
+		const password = (document.getElementById('userPassword') as HTMLInputElement).value;
+
+		if (userId && password) {
+			document.getElementById('error-msg').textContent = '';
+			try {
+				const jsonData = { userId, password };
+
+				globalScript.startLoad();
+				const data = fetch('/api/auth/login', {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+					},
+					body: JSON.stringify(jsonData),
+				})
+					.then(res => res.json())
+					.then(data => {
+						setTimeout(() => {
+							globalScript.stopLoad();
+							if (data.errorMessage) {
+								document.getElementById('error-msg').textContent = data.errorMessage;
+							} else if (data.success) {
+								location.pathname = '/dashboard/home';
+							}
+						}, 1000);
+					});
+			} catch (error) {
+				console.log('An error occured: ' + error.message + '\n' + error);
+			}
+		} else {
+			document.getElementById('error-msg').textContent = 'Please fill in your unique name or email and password.';
+		}
+	});
+</script>
+
+<style lang='scss'>
+	#error-msg {
+		top: 150px;
+	}
+</style>

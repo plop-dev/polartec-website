@@ -1,0 +1,95 @@
+---
+import Modal from '../../components/modal.astro';
+import AuthLayout from '../../layouts/AuthLayout.astro';
+---
+
+<AuthLayout title='Signup'>
+	<div class='header'>Join <span class='text-gradient'>PolarTec</span></div>
+	<div id='error-msg'></div>
+	<div class='content'>
+		<div class='display-name input-cle'>
+			<input type='text' class='gradient' id='userDisplayName' placeholder='Enter a display name (e.g. John):' required />
+		</div>
+		<div class='unique-name input-cle'>
+			<input type='text' class='gradient' id='userUniqueName' placeholder='Enter a unique name (e.g. john-the-best):' required />
+		</div>
+		<div class='email input-cle'>
+			<input type='email' class='gradient' id='userEmail' placeholder='Enter your email' required />
+		</div>
+		<div class='password input-cle'>
+			<input type='password' class='gradient' id='userPassword' placeholder='Enter a secure password: ' required />
+		</div>
+	</div>
+	<div class='actions'>
+		<a href='/auth/login' class='button button-secondary button-grey'>Login</a>
+		<a class='button button-primary button-blue' data-signup>Signup</a>
+	</div>
+</AuthLayout>
+<Modal type='success' id='signupSuccess' noCloseButton={true}>
+	<div class='details-modal-title'>
+		<h1>Success</h1>
+	</div>
+	<div class='details-modal-content'>
+		<p>Your account has successfully been created! Click on the button to go to your new dashboard.</p>
+	</div>
+	<div class='details-modal-buttons'>
+		<a href='/dashboard/home' class='button button-primary button-success modal-close'>Let's go!</a>
+	</div>
+</Modal>
+
+<script>
+	import * as globalScript from '../../scripts/global';
+
+	document.querySelector('.unique-name input').addEventListener('input', event => {
+		let value = (event.target as HTMLInputElement).value;
+		(event.target as HTMLInputElement).value = value.split(' ').join('-');
+
+		if ((event.target as HTMLInputElement).value.split('').find(char => !/([a-zA-Z0-9-_]){1,}/.test(char))) {
+			document.getElementById('error-msg').textContent = 'Unique names can only contain letters, numbers, "_" and "-".';
+			(event.target as HTMLElement).classList.add('invalid');
+		} else {
+			document.getElementById('error-msg').textContent = '';
+			(event.target as HTMLElement).classList.remove('invalid');
+		}
+	});
+
+	document.querySelector('[data-signup]').addEventListener('click', event => {
+		const displayName = (document.getElementById('userDisplayName') as HTMLInputElement).value;
+		const isUniqueNameValid = !document.querySelector('.unique-name').classList.contains('invalid');
+		const uniqueName = (document.getElementById('userUniqueName') as HTMLInputElement).value;
+		const email = (document.getElementById('userEmail') as HTMLInputElement).value;
+		const password = (document.getElementById('userPassword') as HTMLInputElement).value;
+
+		if (displayName && isUniqueNameValid && email && password) {
+			document.getElementById('error-msg').textContent = '';
+			try {
+				const jsonData = { displayName, uniqueName, email, password };
+
+				globalScript.startLoad();
+				const data = fetch('/api/auth/signup', {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+					},
+					body: JSON.stringify(jsonData),
+				})
+					.then(res => res.json())
+					.then(data => {
+						setTimeout(() => {
+							globalScript.stopLoad();
+							if (data.errorMessage) {
+								document.getElementById('error-msg').textContent = data.errorMessage;
+							} else if (data.success) {
+								// show modal success
+								globalScript.showModal('signupSuccess');
+							}
+						}, 1000);
+					});
+			} catch (error) {
+				console.log('An error occured: ' + error.message + '\n' + error);
+			}
+		} else {
+			document.getElementById('error-msg').textContent = 'Please fill in your display name, unique name, email and password.';
+		}
+	});
+</script>

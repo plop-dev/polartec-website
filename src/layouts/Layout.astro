@@ -20,8 +20,8 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<div id='overlay'></div>
-		<slot />
+		<div class='loader-wrapper'><span id='loader'></span></div>
 
-		<script src='/scripts/global.js' defer></script>
+		<slot />
 	</body>
 </html>

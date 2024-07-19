@@ -51,19 +51,19 @@ import Layout from '../layouts/Layout.astro';
 		src='https://cdn.jsdelivr.net/npm/basicscroll@3.0.4/dist/basicScroll.min.js'
 		integrity='sha256-R2a8uLuzuKrkZw4ea/neLUAFJR184EN+L8Uxqe4Zg4Y='
 		crossorigin='anonymous'></script>
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'></script>
+	<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'></script> -->
 </Layout>
 
 <style lang='scss'>
+	body {
+		overflow-x: hidden;
+	}
+
 	main {
 		overflow-x: hidden;
 	}
 
 	.front-page {
-		background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('images/printer.png');
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-attachment: fixed;
 		height: 100dvh;
 		width: 100dvw;
 		display: grid;
@@ -71,6 +71,20 @@ import Layout from '../layouts/Layout.astro';
 		justify-items: center;
 		align-items: center;
 		color: var(--colour-em);
+
+		&::before {
+			position: absolute;
+			content: '';
+			z-index: -1;
+			bottom: 10%;
+			width: 150%;
+			left: -25%;
+			height: 100%;
+			background: linear-gradient(90deg, rgba(18, 58, 116, 0) 0%, #60c2dd 25%, #123a74 50%, #60c2dd 75%, rgba(108, 255, 117, 0) 100%);
+			// background: linear-gradient(90deg, #123a74 0%, #60c2dd 100%);
+			-webkit-mask-image: radial-gradient(rgba(0, 0, 0, 0.45), transparent 70%);
+			mask-image: radial-gradient(rgba(0, 0, 0, 0.45), transparent 70%);
+		}
 
 		.title {
 			text-align: center;

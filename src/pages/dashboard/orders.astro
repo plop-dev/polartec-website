@@ -5,17 +5,18 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 interface Order {
 	fileName: string;
 	plasticType: string;
-	plasticColour: string;
+	colour: string;
 	status: string;
-	dateOrdered: string;
-	price: string;
+	dateOrdered: Date;
+	price: any;
 }
 
-const reqData = new FormData();
-reqData.append('orderId', '1');
-const res = await fetch(Astro.url.origin + '/api/orders', { method: 'GET', headers: { 'Content-type': 'application/json' } });
-const orders: Order[] = await res.json();
-console.log(orders);
+const res = await fetch(Astro.url.origin + '/api/orders', { method: 'POST', headers: { Accept: 'application/json' } });
+const orders: Order[] = await res?.json();
+
+function capitaliseFirstLetter(string: string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
 ---
 
 <DashboardLayout title='Orders' sideBarPos={1}>
@@ -36,20 +37,38 @@ console.log(orders);
 				<div class='column'>Price</div>
 			</div>
 			<div class='items'>
-				<div class='item'>
-					<div>test</div>
-					<div>PLA</div>
-					<div>White</div>
-					<div>
-						<span class='status printing'>Printing</span>
-					</div>
-					<div>22nd October 2023</div>
-					<div>£2.45</div>
-				</div>
+				{
+					orders.map(order => (
+						<div class='item'>
+							<div>{order.fileName.split('.')[0]}</div>
+							<div>{order.plasticType.toUpperCase()}</div>
+							<div class='colour'>{order.colour}</div>
+							<div>
+								<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>{capitaliseFirstLetter(order.status)}</span>
+							</div>
+							<div>{new Date(order.dateOrdered).toLocaleDateString()}</div>
+							<div>{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}</div>
+						</div>
+					))
+				}
 			</div>
 		</div>
 	</div>
 </DashboardLayout>
+
+<script>
+	import * as globalScript from '../../scripts/global';
+	document.addEventListener('DOMContentLoaded', event => {
+		if (localStorage.getItem('reloaded') !== 'true') {
+			globalScript.startLoad();
+			setTimeout(() => {
+				window.location.reload();
+				globalScript.stopLoad();
+			}, 1000);
+		}
+		localStorage.setItem('reloaded', 'true');
+	});
+</script>
 
 <style lang='scss'>
 	.content {
@@ -151,7 +170,7 @@ console.log(orders);
 							}
 						}
 
-						&.preparing {
+						&.order-sent {
 							color: var(--grey);
 							background-color: #545c6c5c;
 

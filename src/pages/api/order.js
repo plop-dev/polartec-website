@@ -3,12 +3,14 @@ import Order from '../../schemas/order';
 import client from '../../scripts/bot/bot';
 
 export const prerender = false;
-export const POST = async ({ request }) => {
+export const POST = async ({ request, cookies }) => {
 	const body = await request.json().then(res => res);
 	const { fileData, fileName, mimeType, userEmail, customMessage, colour, plasticType, layerHeight, infill } = body;
+	const userId = cookies.get('id').value;
 	const receivedFileBuffer = Buffer.from(fileData, 'base64');
 
 	const res = await Order.create({
+		userId,
 		userEmail,
 		customMessage,
 		colour,
@@ -18,9 +20,6 @@ export const POST = async ({ request }) => {
 		fileName,
 		file: { data: receivedFileBuffer, contentType: mimeType },
 	});
-	console.log(res.then(res => res));
-
-	localStorage.setItem('newOrderID', res.id);
 
 	const orderChannelId = '1164312818770788513'; // testing channel for now
 	try {

@@ -1,6 +1,10 @@
 import * as mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
+	userId: {
+		type: String,
+		required: true,
+	},
 	userEmail: {
 		type: String,
 		required: true,
@@ -25,6 +29,11 @@ const orderSchema = new mongoose.Schema({
 		type: Number,
 		required: true,
 	},
+	price: {
+		type: mongoose.SchemaTypes.Mixed,
+		default: 'TBC',
+		required: true,
+	},
 	dateOrdered: {
 		type: Date,
 		default: Date.now,
@@ -36,6 +45,11 @@ const orderSchema = new mongoose.Schema({
 	file: {
 		data: Buffer,
 		contentType: String,
+	},
+	status: {
+		type: String,
+		default: 'Order sent',
+		required: true,
 	},
 });
 
