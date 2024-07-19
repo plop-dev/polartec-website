@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-const { MONGODB_URI } = import.meta.env;
 
 const orderSchema = new mongoose.Schema({
 	userEmail: {
@@ -19,10 +18,5 @@ const orderSchema = new mongoose.Schema({
 		contentType: String,
 	},
 });
-
-await mongoose
-	.connect(MONGODB_URI)
-	.then(() => console.log('Connected to MongoDB.'))
-	.catch(error => console.log(error));
 
 export default mongoose.models.Order || mongoose.model('Order', orderSchema, 'orders');

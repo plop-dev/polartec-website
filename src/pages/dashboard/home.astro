@@ -1,0 +1,48 @@
+---
+export const prerender = false;
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import '../../scripts/bot';
+import '../../scripts/mongoose';
+import '../../scripts/email';
+---
+
+<DashboardLayout title='Dashboard' sideBarPos={0}>
+	<div class='content'>
+		<div class='header'>
+			<h1 class='title'>Home</h1>
+			<div class='actions'></div>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang='scss'>
+	.content {
+		padding: 16px;
+		display: grid;
+		grid-template-rows: 5% 85%;
+		height: calc(100% - 32px);
+		width: calc(100% - 32px);
+
+		.header {
+			display: flex;
+			align-items: center;
+
+			.title {
+				color: var(--colour-em);
+				display: flex;
+				align-items: center;
+				font-size: 32px;
+				padding: 0 4px;
+				margin: 0;
+				font-weight: 700;
+				line-height: 32px;
+			}
+
+			.actions {
+				display: flex;
+				justify-content: end;
+				flex-grow: 1;
+			}
+		}
+	}
+</style>

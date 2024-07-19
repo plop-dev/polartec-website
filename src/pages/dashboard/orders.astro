@@ -1,0 +1,160 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title='Orders' sideBarPos={1}>
+	<div class='content'>
+		<div class='header'>
+			<h1 class='title'>Orders</h1>
+			<div class='actions'>
+				<a href='/dashboard/new-order' class='button button-primary button-blue'>New Order</a>
+			</div>
+		</div>
+		<div class='list'>
+			<div class='column-list'>
+				<div class='column'>Name</div>
+				<div class='column'>Plastic Type</div>
+				<div class='column'>Plastic Colour</div>
+				<div class='column'>Status</div>
+				<div class='column'>Date Ordered</div>
+				<div class='column'>Price</div>
+			</div>
+			<div class='items'>
+				<div class='item'>
+					<div>test</div>
+					<div>PLA</div>
+					<div>White</div>
+					<div>
+						<span class='status printing'>Printing</span>
+					</div>
+					<div>22nd October 2023</div>
+					<div>£2.45</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang='scss'>
+	.content {
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 48px;
+		height: calc(100% - 32px);
+		width: calc(100% - 32px);
+
+		.header {
+			height: 8%;
+			display: flex;
+			align-items: center;
+
+			.title {
+				color: var(--colour-em);
+				display: flex;
+				align-items: center;
+				font-size: 32px;
+				padding: 0 4px;
+				margin: 0;
+				font-weight: 700;
+				line-height: 32px;
+			}
+
+			.actions {
+				display: flex;
+				justify-content: end;
+				flex-grow: 1;
+			}
+		}
+
+		.list {
+			height: auto;
+			width: 100%;
+			max-width: 100%;
+			overflow: auto;
+
+			.column-list {
+				display: flex;
+				align-items: center;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				position: sticky;
+				top: 0;
+				background-color: var(--background-light);
+
+				.column {
+					flex: 1;
+					padding: 8px 16px;
+					display: flex;
+					align-items: center;
+				}
+			}
+
+			.item {
+				display: flex;
+				align-items: center;
+				transition: 0.15s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+				height: 50px;
+
+				& > div {
+					flex: 1;
+					padding: 8px 16px;
+					display: flex;
+					align-items: center;
+
+					span.status {
+						border-radius: 4px;
+						display: flex;
+						align-items: center;
+						padding: 4px 8px;
+						font-size: 12px;
+
+						&::before {
+							content: '';
+							width: 4px;
+							height: 4px;
+							border-radius: 50%;
+							margin-right: 4px;
+						}
+
+						&.printed {
+							color: var(--green);
+							background-color: #2dbd7e38;
+
+							&::before {
+								background-color: var(--green);
+							}
+						}
+
+						&.printing {
+							color: var(--orange);
+							background-color: #e6864645;
+
+							&::before {
+								background-color: var(--orange);
+							}
+						}
+
+						&.preparing {
+							color: var(--grey);
+							background-color: #545c6c5c;
+
+							&::before {
+								background-color: var(--grey);
+							}
+						}
+					}
+				}
+
+				&:hover {
+					background-color: var(--background-light);
+				}
+
+				&:last-child {
+					border-bottom-left-radius: 6px;
+					border-bottom-right-radius: 6px;
+				}
+			}
+		}
+	}
+</style>

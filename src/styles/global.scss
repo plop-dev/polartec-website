@@ -1,16 +1,9 @@
 @import url("https://fonts.googleapis.com/css?family=Inter:700|Inter:400");
 
 :root {
-    // --linear-gradient: linear-gradient(
-    //     124deg,
-    //     rgba(153, 56, 217, 1) 10%,
-    //     rgba(253, 29, 29, 1) 63%,
-    //     rgba(252, 176, 69, 1) 100%
-    // );
-    // --linear-gradient-colours: rgba(153, 56, 217, 1) 10%, rgba(253, 29, 29, 1) 63%, rgba(252, 176, 69, 1) 100%;
     --linear-gradient: linear-gradient(120deg, var(--secondary), var(--accent));
     --linear-gradient-colours: var(--secondary), var(--accent);
-    --colour-em: #fbfefd;
+    --colour-em: #f0f0f0;
     --colour: #d1d1d1;
     --background: #121212;
     --background-light: #2d3134;
@@ -18,6 +11,11 @@
     --primary: #0c1f49;
     --secondary: #123a74;
     --accent: #60c2dd;
+
+    --green: #2ba972;
+    --orange: #e28446;
+    --grey: #727a8a;
+    --red: #dd2433;
 }
 
 * {
@@ -32,6 +30,11 @@ body {
     background-color: var(--background);
 }
 
+input {
+    border: none;
+    outline: none;
+    border-style: none;
+}
 a {
     font-style: normal;
     color: unset;

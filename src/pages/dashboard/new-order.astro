@@ -1,0 +1,263 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title='New Order' sideBarPos={2}>
+	<div class='content'>
+		<div class='header'>
+			<h1 class='title'>New Order</h1>
+		</div>
+		<div class='order'>
+			<form action=''>
+				<div class='email input-gradient'>
+					<input type='email' id='userEmail' placeholder="What's your email?" />
+					<div id='anim'>
+						<span class='tooltip' data-tooltip='Enter a valid email.'>!</span>
+					</div>
+				</div>
+				<div class='custom-message input-gradient'>
+					<textarea id='customMessage' placeholder='Enter a message here (optional):'></textarea>
+				</div>
+				<div class='file'></div>
+			</form>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang='scss'>
+	.content {
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 64px;
+		height: calc(100% - 32px);
+		width: calc(100% - 32px);
+
+		.header {
+			display: flex;
+			align-items: center;
+			height: 8%;
+
+			.title {
+				color: var(--colour-em);
+				display: flex;
+				align-items: center;
+				font-size: 32px;
+				padding: 0 4px;
+				margin: 0;
+				font-weight: 700;
+				line-height: 32px;
+			}
+
+			.actions {
+				display: flex;
+				justify-content: end;
+				flex-grow: 1;
+			}
+		}
+
+		.order {
+			width: auto;
+			height: auto;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+
+			.input-gradient {
+				position: relative;
+				display: flex;
+				flex-direction: row;
+				width: 40vw;
+				max-width: 40vw;
+				margin: 0 auto;
+				border-radius: 6px;
+				padding: 1.4rem 2rem 1.6rem;
+				background: var(--background-light);
+
+				&:after {
+					content: '';
+					position: absolute;
+					left: 0px;
+					right: 0px;
+					bottom: 0px;
+					z-index: 100;
+					height: 2px;
+					background-position: 0% 0%;
+					background: linear-gradient(to right, var(--secondary), var(--green), var(--accent), var(--green), var(--secondary), var(--green));
+					background-size: 500% auto;
+					animation: gradient 3s linear infinite;
+				}
+
+				input {
+					flex-grow: 1;
+					color: var(--colour);
+					font-size: 20px;
+					line-height: 18px;
+					vertical-align: middle;
+					background: transparent;
+				}
+
+				#anim {
+					cursor: pointer;
+					&:hover {
+						animation: shake 0.5s ease-in-out forwards;
+					}
+
+					.tooltip {
+						top: 5px;
+						left: 20px;
+						position: relative;
+						background-color: var(--red);
+						padding: 4px 11px;
+						margin: 5px;
+						font-size: 16px;
+						border-radius: 50%;
+						color: var(--colour);
+
+						&::before,
+						&::after {
+							position: absolute;
+							content: '';
+							opacity: 0;
+							transition: all 0.4s ease-in-out;
+						}
+
+						&::before {
+							border-width: 8px 10px 8px 8px;
+							border-style: solid;
+							border-color: transparent var(--red) transparent transparent;
+							left: 33px;
+							top: 7px;
+						}
+
+						&::after {
+							content: attr(data-tooltip);
+							background: var(--red);
+							width: 120px;
+							height: 40px;
+							font-size: 13px;
+							font-weight: 300;
+							top: -15px;
+							left: 50px;
+							padding: 10px;
+							border-radius: 6px;
+							letter-spacing: 1px;
+						}
+
+						&:hover::before,
+						&:hover::after {
+							opacity: 1;
+							transform: translateY(-2px);
+						}
+
+						@keyframes shake {
+							0% {
+								transform: rotate(2deg);
+							}
+							50% {
+								transform: rotate(-3deg);
+							}
+							70% {
+								transform: rotate(3deg);
+							}
+							100% {
+								transform: rotate(0deg);
+							}
+						}
+					}
+				}
+
+				&.custom-message {
+					height: 180px;
+					border-radius: 0;
+
+					textarea {
+						background-color: transparent;
+						border: 0;
+						outline: 0;
+						resize: none;
+						width: 100%;
+						max-width: 100%;
+						max-height: 180px;
+						color: var(--colour);
+						font-size: 20px;
+					}
+				}
+			}
+		}
+	}
+
+	@keyframes gradient {
+		0% {
+			background-position: 0 0;
+		}
+		100% {
+			background-position: 100% 0;
+		}
+	}
+</style>
+
+<script defer>
+const email = document.getElementById('userEmail');
+const errorTooltip = document.querySelector('#anim .tooltip');
+const form = document.querySelector('form');
+
+email.addEventListener('input', event => {
+	if (email.value) {
+		const regexMatch = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value);
+		if (regexMatch) {
+			errorTooltip.setAttribute('data-tooltip', '');
+			errorTooltip.style.opacity = 0;
+		} else {
+			errorTooltip.style.opacity = 1;
+			errorTooltip.setAttribute('data-tooltip', 'Email is invalid.');
+		}
+	} else {
+		errorTooltip.style.opacity = 1;
+		errorTooltip.setAttribute('data-tooltip', 'Enter a valid email.');
+	}
+});
+
+function validateAndSend() {
+	const fileInput = document.getElementById('fileInput');
+	const file = fileInput.files[0];
+	const customMessage = document.getElementById('customMessage').value;
+	const userEmail = email.value;
+
+	if (file && userEmail) {
+		// Check file size (10MB limit)
+		const maxSize = 10 * 1024 * 1024; // 10MB
+		if (file.size > maxSize) {
+			console.error('File size exceeds the limit (10MB).');
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = event => {
+			const fileData = event.target.result.split(',')[1];
+			const fileName = file.name;
+			const mimeType = file.mimetype;
+			const jsonData = { fileData, fileName, mimeType, userEmail, customMessage };
+
+			fetch('/api/order', {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+				},
+				body: JSON.stringify(jsonData),
+			})
+				.then(response => response.text())
+				.then(data => {
+					console.log('File uploaded successfully. File ID:', data.fileId);
+					// You can handle the file ID as needed
+				})
+				.catch(error => console.error('Error:', error));
+		};
+		reader.readAsDataURL(file);
+	} else {
+		console.error('Please provide a file and your email.');
+	}
+}
+</script>

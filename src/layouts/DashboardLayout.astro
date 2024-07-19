@@ -1,17 +1,43 @@
 ---
+import { ViewTransitions, slide } from 'astro:transitions';
 import Layout from './Layout.astro';
+interface Props {
+	title: string;
+	sideBarPos: number;
+}
+
+const { title, sideBarPos } = Astro.props;
+
+let home: string, orders: string, newOrder: string, support: string;
+
+switch (sideBarPos) {
+	case 0:
+		home = 'active';
+		break;
+	case 1:
+		orders = 'active';
+		break;
+	case 2:
+		newOrder = 'active';
+		break;
+	case 3:
+		support = 'active';
+		break;
+	default:
+		break;
+}
 ---
 
-<Layout title='Dashboard'>
+<Layout title={title}>
 	<main>
 		<div class='sidebar'>
-			<div class='logo'>
+			<div class='logo' transition:persist>
 				<div class='icon'><img src='/images/OIG_trim.png' /></div>
 				<span>PolarTec</span>
 			</div>
 			<ul class='list'>
-				<li class='active'>
-					<a href='/dashboard'>
+				<li class:list={home}>
+					<a href='/dashboard/home'>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							width='18'
@@ -29,8 +55,8 @@ import Layout from './Layout.astro';
 						<span>Home</span>
 					</a>
 				</li>
-				<li>
-					<a href='/orders'>
+				<li class:list={orders}>
+					<a href='/dashboard/orders'>
 						<svg xmlns='http://www.w3.org/2000/svg' enable-background='new 0 0 20 20' height='18px' viewBox='0 0 20 20' width='18px' fill='#FFFFFF'
 							><rect fill='none' height='20' width='20'></rect><path
 								d='M18,7.5h-7V6h7V7.5z M18,12.5h-7V14h7V12.5z M3.06,5.11L2,6.17L4.83,9l4.6-4.6L8.36,3.34L4.83,6.88L3.06,5.11z M3.06,11.61 L2,12.67l2.83,2.83l4.6-4.6L8.36,9.84l-3.54,3.54L3.06,11.61z'
@@ -39,8 +65,18 @@ import Layout from './Layout.astro';
 						<span>Orders</span>
 					</a>
 				</li>
-				<li>
-					<a href='/support'>
+				<li class:list={newOrder}>
+					<a href='/dashboard/new-order'>
+						<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'
+							><path
+								d='M128-324v-75h280v75H128Zm0-158v-75h437v75H128Zm0-157v-75h437v75H128Zm512 472v-157H483v-75h157v-158h75v158h158v75H715v157h-75Z'
+							></path></svg
+						>
+						<span>New Order</span>
+					</a>
+				</li>
+				<li class:list={support}>
+					<a href='/dashboard/support'>
 						<svg xmlns='http://www.w3.org/2000/svg' height='18px' viewBox='0 0 24 24' width='18px' fill='#FFFFFF'
 							><path d='M0 0h24v24H0V0z' fill='none'></path><path
 								d='M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z'
@@ -51,7 +87,7 @@ import Layout from './Layout.astro';
 				</li>
 			</ul>
 
-			<div class='account'>
+			<div class='account' transition:persist>
 				<div class='pfp'><img src='/images/OIG_trim.png' /></div>
 				<div class='name'>PolarTec</div>
 				<a class='info' href='/settings'>
@@ -73,6 +109,7 @@ import Layout from './Layout.astro';
 		</div>
 		<slot />
 	</main>
+	<ViewTransitions />
 </Layout>
 
 <style lang='scss'>
@@ -126,6 +163,7 @@ import Layout from './Layout.astro';
 
 				svg {
 					margin-right: 8px;
+					filter: brightness(0) saturate(100%) invert(100%) sepia(25%) saturate(164%) hue-rotate(282deg) brightness(115%) contrast(87%);
 				}
 
 				a {
