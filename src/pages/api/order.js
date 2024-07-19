@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import Order from '../../schemas/order';
 import client from '../../scripts/bot/bot';
 
@@ -27,7 +27,13 @@ export const POST = async ({ request, cookies }) => {
 				.setTimestamp()
 				.setColor([130, 180, 210]);
 
-			const message = await channel.send({ embeds: [embed], files: [{ attachment: receivedFileBuffer, name: fileName }] });
+			const button = new ButtonBuilder().setCustomId('showModalButton').setLabel('Enter price').setStyle(ButtonStyle.Primary);
+
+			const message = await channel.send({
+				embeds: [embed],
+				files: [{ attachment: receivedFileBuffer, name: fileName }],
+				components: [new ActionRowBuilder().addComponents(button)],
+			});
 
 			const fileLink = message.attachments.first().url;
 
@@ -45,7 +51,6 @@ export const POST = async ({ request, cookies }) => {
 		}
 	} catch (error) {
 		console.log('An error occured: ' + error.message + '\n' + error);
-		console.log(error);
 	}
 
 	return new Response(null, { status: 200 });

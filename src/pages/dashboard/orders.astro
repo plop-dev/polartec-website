@@ -61,7 +61,9 @@ function capitaliseFirstLetter(string: string) {
 								<div>
 									<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>{capitaliseFirstLetter(order.status)}</span>
 								</div>
-								<div>{new Date(order.dateOrdered).toLocaleDateString()}</div>
+								<div>
+									{new Date(order.dateOrdered).toLocaleDateString()} at {new Date(order.dateOrdered).toLocaleTimeString()}
+								</div>
 								<div>{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}</div>
 							</div>
 						))

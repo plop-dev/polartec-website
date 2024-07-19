@@ -1,0 +1,99 @@
+<style>
+  :root {
+    color-scheme: dark;
+    --font-big: 30px;
+    --font-medium: 20px;
+    --font-small: 18px;
+  }
+
+  * {
+    font-family: sans-serif;
+    color: #fff;
+  }
+
+  body {
+    background-color: #121212;
+    margin: 0;
+    padding: 8px;
+  }
+
+  p {
+    font-size: 18px;
+  }
+
+  h1 span {
+    color: #60c2dd;
+  }
+
+  .buttons {
+    margin: 5% auto 0 auto;
+    text-align: center;
+  }
+
+  .buttons a {
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 10px 22px;
+    text-decoration: none;
+    color: #fff;
+    -webkit-transition: 0.2s ease-in-out;
+    -o-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .buttons a.accept {
+    margin-right: 30px;
+    background-color: #2182b3;
+  }
+
+  .buttons a.reject {
+    background-color: #b93f49;
+  }
+
+  .buttons a:hover {
+    -webkit-filter: brightness(0.8);
+    filter: brightness(0.8);
+  }
+
+  .order-card {
+    font-size: var(--font-small);
+    margin: 5% auto 0 auto;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    border-radius: 6px;
+    background-color: #2d3134;
+    padding: 12px;
+  }
+
+  .order-card h2 {
+    margin-top: 4px;
+  }
+
+  .order-card .grid {
+    line-height: 35px;
+  }
+</style>
+
+<body>
+  <h1>Hi <span><%= userName %></span>,</h1>
+  <p>Good news! Szymon got your order and it's all set to be printed. It costs £<%= price %>, and you can pay him when you meet up. Just hit 'Print now!' to get things going. Check the orders page on the dashboard for updates on when it's ready. If there's a problem or you change your mind, hit 'Cancel' and let us know. Thanks!<br><strong><%- customMessageInput %></strong></p>
+
+  <div class="buttons">
+    <a href="http://localhost:3000/api/email/accept" class="accept">Print now!</a>
+    <a href="http://localhost:3000/api/email/reject" class="reject">Cancel</a>
+  </div>
+
+  <div class="order-card">
+    <h2>Your order:</h2>
+    <div class="grid">
+      <span>Colour: <%= colour %></span><br>
+      <span>Plastic Type: <%= plasticType %></span><br>
+      <span>Layer Height: <%= layerHeight %></span><br>
+      <span>Infill: <%= infill %></span><br>
+    </div>
+  </div>
+</body>
