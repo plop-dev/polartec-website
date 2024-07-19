@@ -1,0 +1,111 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title='Support' sideBarPos={3}>
+	<div class='content'>
+		<div class='header'>
+			<h1 class='title'>Support</h1>
+			<div class='actions'></div>
+		</div>
+		<div class='sections'>
+			<section>
+				<h2>Contact us by <span>email</span></h2>
+				<p>Send us an email about any problems you're experiencing or something we could improve!</p>
+				<span>Contact.PolarTec@gmail.com</span>
+			</section>
+			<section>
+				<h2>Contact us on <span>discord</span></h2>
+				<p>
+					You can DM us on discord for any questions you have. A PolarTec support server is currently being made so make sure to check it out when
+					it's finished!
+				</p>
+				<span>plop_dev <strong>or</strong> itsarctic</span>
+			</section>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang='scss'>
+	body {
+		overflow-x: hidden;
+	}
+
+	.content {
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		height: calc(100% - 32px);
+		width: calc(100% - 32px);
+
+		.header {
+			display: flex;
+			align-items: center;
+			height: 12dvh;
+
+			.title {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				font-size: 32px;
+				padding: 0 4px;
+				margin: 0;
+				font-weight: 400;
+				line-height: 32px;
+			}
+
+			.actions {
+				display: flex;
+				justify-content: end;
+				flex-grow: 1;
+			}
+		}
+
+		.sections {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			width: 100%;
+			gap: 25%;
+
+			section {
+				background-color: var(--background-light);
+				border-radius: 6px;
+				display: flex;
+				flex-direction: column;
+				gap: 36px;
+				align-items: center;
+				height: 60%;
+				width: 30%;
+				padding-top: 5%;
+
+				& > *:last-child {
+					padding-bottom: 5%;
+				}
+
+				h2 {
+					font-size: 22;
+					font-weight: 500;
+
+					span {
+						color: var(--accent);
+					}
+				}
+
+				p {
+					padding: 20px;
+					text-align: center;
+					font-size: 18px;
+				}
+				p ~ span {
+					font-size: 20px;
+					color: var(--accent);
+				}
+			}
+		}
+	}
+</style>
