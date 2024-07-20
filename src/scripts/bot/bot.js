@@ -84,13 +84,15 @@ client.on('interactionCreate', async interaction => {
 						const data = juice(html);
 						const confirmationEmail = await transporter.sendMail({
 							from: 'Contact.PolarTec@gmail.com',
-							to: 'plop@leafbot.dev',
+							to: userEmail.trim(),
 							subject: 'Confirm your order',
 							html: data,
 						});
 					}
 				},
 			);
+
+			const order = await Order.findOneAndUpdate({ randomId: customId }, { $set: { status: 'Check Emails', price: priceInput } });
 		}
 	} else if (interaction.commandName === 'status') {
 		await interaction.deferReply({ ephemeral: true });

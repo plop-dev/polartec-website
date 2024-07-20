@@ -96,6 +96,33 @@ a {
     }
 }
 
+.link {
+    text-decoration: none;
+    position: relative;
+    color: var(--accent) !important;
+    z-index: 1;
+
+    &::before {
+        background: var(--linear-gradient);
+        content: "";
+        inset: 0;
+        position: absolute;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+        z-index: 0;
+        height: 3px;
+        border-radius: 5px;
+        top: 100%;
+    }
+
+    &:hover::before {
+        transform: scaleX(1);
+        transform-origin: left;
+        z-index: 0;
+    }
+}
+
 .text-gradient {
     background: var(--linear-gradient);
     color: transparent;
@@ -289,6 +316,11 @@ a {
             strong {
                 font-weight: 300;
                 font-size: 20px;
+
+                span {
+                    font-size: 18px;
+                    color: var(--colour-grey);
+                }
             }
 
             strong {

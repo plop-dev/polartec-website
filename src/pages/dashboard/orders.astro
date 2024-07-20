@@ -177,7 +177,8 @@ function capitaliseFirstLetter(string: string) {
 							margin-right: 4px;
 						}
 
-						&.delivered {
+						&.delivered,
+						&.preparing {
 							color: var(--blue);
 							background-color: #2182b357;
 
@@ -201,6 +202,15 @@ function capitaliseFirstLetter(string: string) {
 
 							&::before {
 								background-color: var(--orange);
+							}
+						}
+
+						&.check-emails {
+							color: var(--red);
+							background-color: #dd243352;
+
+							&::before {
+								background-color: var(--red);
 							}
 						}
 

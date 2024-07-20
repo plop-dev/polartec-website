@@ -22,6 +22,28 @@ const availableColoursJSON = JSON.stringify(availableColours);
 const { user } = Astro.locals;
 ---
 
+<Modal type='error' id='fileSize'>
+	<div class='details-modal-title'>
+		<h1>Error</h1>
+	</div>
+	<div class='details-modal-content'>
+		<p>Make sure the file size is less than 25 MB. We are currently working on 50 MB file upload. Sorry for the inconvenience.</p>
+	</div>
+	<div class='details-modal-buttons'>
+		<a class='button button-primary button-danger modal-close'>Got it!</a>
+	</div>
+</Modal>
+<Modal type='error' id='fillInputsError'>
+	<div class='details-modal-title'>
+		<h1>Error</h1>
+	</div>
+	<div class='details-modal-content'>
+		<p>Make sure you fill in every input on the page before sending the order (except for the 'Custom Message' input).</p>
+	</div>
+	<div class='details-modal-buttons'>
+		<a class='button button-primary button-danger modal-close'>Got it!</a>
+	</div>
+</Modal>
 <DashboardLayout title='New Order' sideBarPos={2}>
 	<div class='content'>
 		<div class='header'>
@@ -48,7 +70,11 @@ const { user } = Astro.locals;
 							</div>
 
 							<img src='/images/upload.svg' />
-							<p>Drag and drop your .STL, .OBJ or .3MF<br />file here</p>
+							<p>
+								Drag and drop your .STL, .OBJ or .3MF<br />file here<br /><span
+									>(Don't know what to print? Check out <a class='link' href='https://printables.com'>printables</a>!)</span
+								>
+							</p>
 							<strong>or</strong>
 							<a class='button button-primary button-blue'>Click here</a>
 						</div>
@@ -138,17 +164,6 @@ const { user } = Astro.locals;
 				</div>
 			</div>
 		</div>
-		<Modal type='error' id='fillInputsError'>
-			<div class='details-modal-title'>
-				<h1>Error</h1>
-			</div>
-			<div class='details-modal-content'>
-				<p>Make sure you fill in every input on the page before sending the order (except for the 'Custom Message' input).</p>
-			</div>
-			<div class='details-modal-buttons'>
-				<a class='button button-primary button-danger modal-close'>Got it!</a>
-			</div>
-		</Modal>
 	</div>
 </DashboardLayout>
 
@@ -606,10 +621,9 @@ const { user } = Astro.locals;
 
 		if (file && userEmail && colour && plasticType && layerHeight && infill) {
 			try {
-				// Check file size (10MB limit)
-				const maxSize = 40 * 1024 * 1024; // 40MB
+				const maxSize = 20 * 1024 * 1024; // 20MB
 				if (file.size > maxSize) {
-					console.error('File size exceeds the limit (40MB).');
+					showModal('fileSize');
 					return;
 				}
 

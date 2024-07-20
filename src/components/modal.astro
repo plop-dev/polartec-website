@@ -43,18 +43,20 @@ switch (type) {
 </div>
 
 <script>
-	const id = document.querySelector('.details-modal').getAttribute('id');
+	document.querySelectorAll('.details-modal').forEach(modal => {
+		const id = modal.getAttribute('id');
 
-	if (document.querySelector('.details-modal-close')) {
-		document.querySelector('.details-modal-close').addEventListener('click', event => {
-			hideModal(id);
-		});
-	}
-	Array.from(document.querySelector('.details-modal-buttons').children)
-		.find(button => button.classList.contains('modal-close'))
-		.addEventListener('click', event => {
-			hideModal(id);
-		});
+		if (modal.querySelector('.details-modal-close')) {
+			modal.querySelector('.details-modal-close').addEventListener('click', event => {
+				hideModal(id);
+			});
+		}
+		Array.from(modal.querySelector('.details-modal-buttons').children)
+			.find(button => button.classList.contains('modal-close'))
+			.addEventListener('click', event => {
+				hideModal(id);
+			});
+	});
 </script>
 
 <style lang='scss' is:global define:vars={{ modalAccent }}>
