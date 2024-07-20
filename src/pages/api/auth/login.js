@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import User from '../../../schemas/user';
-import { AstroCookies } from 'astro';
 import randomId from '../../../tools/randomId';
 
 export const prerender = false;

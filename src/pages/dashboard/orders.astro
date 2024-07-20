@@ -16,8 +16,8 @@ const res = await fetch(Astro.url.origin + '/api/orders', {
 	headers: { Accept: 'application/json' },
 	body: JSON.stringify(Astro.locals.user),
 });
-const resJSON = await res.json();
 
+const resJSON = await res.json();
 let orders: Order[] = [];
 
 if (!resJSON.none) {

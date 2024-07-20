@@ -100,6 +100,10 @@ client.on('interactionCreate', async interaction => {
 		const id = interaction.options.get('id').value;
 		const status = interaction.options.get('status').value;
 
+		if (status === 'Delivered') {
+			await interaction.message.edit({ content: `\`Order has been printed and delivered.\`` });
+		}
+
 		try {
 			const order = await Order.findOneAndUpdate({ randomId: id }, { $set: { status: status } });
 			if (!order) {

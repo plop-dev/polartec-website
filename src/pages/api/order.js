@@ -11,7 +11,7 @@ export const POST = async ({ request, cookies }) => {
 	const userId = cookies.get('userId').value.split('*SID-')[0];
 	const receivedFileBuffer = Buffer.from(fileData, 'base64');
 
-	const orderChannelId = '1164312818770788513'; // testing channel for now
+	const orderChannelId = '1164311557874921532';
 	try {
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
 		if (channel) {

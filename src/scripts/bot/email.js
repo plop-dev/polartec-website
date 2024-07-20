@@ -39,7 +39,7 @@ const main = async () => {
 			});
 		}
 
-		const emailChannelId = '1164312818770788513'; // testing channel for now
+		const emailChannelId = '1164311557874921532'; // testing channel for now
 		try {
 			const channel = await client.channels.fetch(emailChannelId).then(res => res);
 			if (channel) {

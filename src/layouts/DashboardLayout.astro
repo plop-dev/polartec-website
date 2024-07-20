@@ -47,7 +47,7 @@ if (!user?.redirect) {
 <Layout title={title}>
 	<main>
 		<div class='sidebar'>
-			<div class='logo' transition:persist>
+			<div class='logo' transition:persist onclick="location.pathname = '/'">
 				<img src='/images/OIG_trim.png' />
 				<span>PolarTec</span>
 			</div>
@@ -106,7 +106,7 @@ if (!user?.redirect) {
 			<div class='account' transition:persist>
 				<div class='pfp'>{initials}</div>
 				<div class='name'>{user.displayName}</div>
-				<!-- <a class='info' href='/settings'>
+				<div class='info'>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
 						width='24'
@@ -120,13 +120,63 @@ if (!user?.redirect) {
 						class='feather feather-more-horizontal'
 						><circle cx='12' cy='12' r='1'></circle><circle cx='19' cy='12' r='1'></circle><circle cx='5' cy='12' r='1'></circle></svg
 					>
-				</a> -->
+					<div class='info-list'>
+						<a href='/api/auth/signout' class='button button-primary button-danger'>Sign out</a>
+					</div>
+				</div>
 			</div>
 		</div>
 		<slot />
 	</main>
 	<ViewTransitions />
 </Layout>
+
+<script>
+	const infoList = document.querySelector('.info-list') as HTMLElement;
+	const infoButtonIcon = document.querySelector('.info svg') as HTMLElement;
+	const infoListOptions = document.querySelectorAll('.info-list a') as NodeList;
+	const infoButton = document.querySelector(`.info`) as HTMLElement;
+
+	function show() {
+		setTimeout(() => {
+			infoList.style.display = 'flex';
+		}, 200);
+		infoList.style.opacity = '1';
+	}
+
+	function hide() {
+		setTimeout(() => {
+			infoList.style.display = 'none';
+		}, 200);
+
+		infoList.style.opacity = '0';
+	}
+
+	function isOutside(element, dropdown) {
+		if (element === infoListOptions || element === infoList || element === infoButton || element === infoButtonIcon) return false;
+
+		infoListOptions.forEach(item => {
+			if (element === item) return false;
+		});
+
+		return true;
+	}
+
+	function handleClickOutside(e, dropdown) {
+		if (infoList.style.opacity === '1' && isOutside(e.target, dropdown)) {
+			hide();
+		}
+	}
+
+	infoButton.addEventListener('click', () => show());
+	window.addEventListener('click', event => handleClickOutside(event, infoList));
+</script>
+
+<style is:global lang='scss'>
+	.navbar {
+		display: none !important;
+	}
+</style>
 
 <style lang='scss'>
 	main {
@@ -145,6 +195,7 @@ if (!user?.redirect) {
 		max-width: 240px;
 
 		.logo {
+			cursor: pointer;
 			display: flex;
 			justify-content: center;
 			padding: 10px 0;
@@ -247,6 +298,24 @@ if (!user?.redirect) {
 				justify-content: flex-end;
 				flex: 1;
 				margin-right: 10%;
+				position: relative;
+
+				.info-list {
+					display: none;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					border-radius: 6px;
+					padding: 8px;
+					background-color: var(--background-lighter);
+					opacity: 0;
+					transition: 0.2s ease-out;
+					position: absolute;
+					width: 150px;
+					height: 50px;
+					bottom: 30px;
+					left: -5px;
+				}
 			}
 		}
 	}

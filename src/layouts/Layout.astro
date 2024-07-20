@@ -22,10 +22,56 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<div id='overlay'></div>
+		<div id='mobile-support'>
+			<h2>Warning</h2>
+			<p>
+				PolarTec doesn't support mobile just <i>yet</i>. The website hasn't been adapted to fit smaller screens. <span
+					>Please us a larger screen (like a laptop or monitor) to have the best experience.</span
+				>
+				 Mobile support <i>will</i> be added so please be patient.
+			</p>
+			<h4>Sorry for the inconvenience.</h4>
+		</div>
+
 		<div class='loader-wrapper'><span id='loader'></span></div>
+		<div class='navbar'>
+			<ul class='navbar-list'>
+				<li>
+					<a href='/#top'
+						><i class='ai-home'></i>
+						<span>Home</span></a
+					>
+				</li>
+				<li>
+					<a href='/dashboard/home'
+						><i class='ai-dashboard'></i>
+						<span>Dashboard</span></a
+					>
+				</li>
+				<li>
+					<a href='/dashboard/orders'
+						><i class='ai-grid'></i>
+						<span>Orders</span></a
+					>
+				</li>
+				<li>
+					<a href='/dashboard/new-order'
+						><i class='ai-plus'></i>
+						<span>New Order</span></a
+					>
+				</li>
+				<li>
+					<a href='/dashboard/support'
+						><i class='ai-info'></i>
+						<span>Contact</span></a
+					>
+				</li>
+			</ul>
+		</div>
 
 		<slot />
 
+		<script src='https://unpkg.com/akar-icons-fonts'></script>
 		<script type='text/javascript' src='/scripts/global.js'></script>
 	</body>
 </html>

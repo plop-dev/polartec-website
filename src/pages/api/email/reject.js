@@ -3,7 +3,7 @@ import client from '../../../scripts/bot/bot';
 
 export const prerender = false;
 export async function GET({ request, cookies, redirect }) {
-	const orderChannelId = '1164312818770788513'; // testing channel for now
+	const orderChannelId = '1164311557874921532';
 	try {
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
 		if (channel) {
