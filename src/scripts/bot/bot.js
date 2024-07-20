@@ -5,6 +5,10 @@ import juice from 'juice';
 import ejs from 'ejs';
 import path, { dirname } from 'path';
 
+import registerCommands from './statusControl';
+await registerCommands();
+
+import Order from '../../schemas/order';
 import dotenv from 'dotenv';
 dotenv.config();
 const { BOT_TOKEN, CLIENT_ID, CLIENT_SECRET, EMAIL_APP_PASSWORD } = process.env;
@@ -87,6 +91,25 @@ client.on('interactionCreate', async interaction => {
 					}
 				},
 			);
+		}
+	} else if (interaction.commandName === 'status') {
+		await interaction.deferReply({ ephemeral: true });
+
+		const id = interaction.options.get('id').value;
+		const status = interaction.options.get('status').value;
+
+		try {
+			const order = await Order.findOneAndUpdate({ randomId: id }, { $set: { status: status } });
+			if (!order) {
+				return await interaction.editReply({
+					content: `Order not found. Make sure you've copied the id correctly and that the order is still available.`,
+				});
+			}
+
+			await interaction.editReply({ content: `Order \`${id}\`'s status has succesfully been updated to \`${status}\`.` });
+		} catch (error) {
+			console.log('An error occured: ' + error.message + '\n' + error);
+			await interaction.editReply({ content: `An error occured whilst trying to change the status. Try again later or contact \`plop_dev\`.` });
 		}
 	}
 });

@@ -83,7 +83,7 @@ function capitaliseFirstLetter(string: string) {
 			setTimeout(() => {
 				window.location.reload();
 				stopLoad();
-			}, 1000);
+			}, 2000);
 		}
 		localStorage.setItem('reloaded', 'true');
 	});
@@ -175,6 +175,15 @@ function capitaliseFirstLetter(string: string) {
 							height: 4px;
 							border-radius: 50%;
 							margin-right: 4px;
+						}
+
+						&.delivered {
+							color: var(--blue);
+							background-color: #2182b357;
+
+							&::before {
+								background-color: var(--blue);
+							}
 						}
 
 						&.printed {

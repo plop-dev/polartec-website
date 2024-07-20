@@ -6,7 +6,8 @@ export async function GET({ request, cookies, redirect }) {
 	try {
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
 		if (channel) {
-			const id = channel.messages.cache.find(msg => {
+			const messages = await channel.messages.fetch();
+			const id = messages.find(msg => {
 				return msg.embeds[0].data.fields.find(field => field.name === 'Custom ID').value === request.url.split('?')[1].split('=')[1];
 			}).id;
 			await channel.messages.cache.get(id).edit({ content: `\`\`\`md\nUser has the accepted order. **PRINTING CAN START!**\n\`\`\`` });
