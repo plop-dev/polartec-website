@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import Order from '../../schemas/order';
 
 interface Order {
 	fileName: string;
@@ -11,27 +12,12 @@ interface Order {
 	price: any;
 }
 
-const res = await fetch(Astro.url.origin + '/api/orders', {
-	method: 'POST',
-	headers: { Accept: 'application/json' },
-	body: JSON.stringify(Astro.locals.user),
-});
-
-const resJSON = await res.json();
-let orders: Order[] = [];
-
-if (!resJSON.none) {
-	orders = resJSON;
-}
+let orders: Order[] = await Order.find({ userId: Astro.cookies.get('userId').value.split('*SID-')[0] });
 
 function capitaliseFirstLetter(string: string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 ---
-
-<script define:vars={{ redirect: resJSON.redirect }}>
-	if (redirect) window.location.href = '/auth/login';
-</script>
 
 <DashboardLayout title='Orders' sideBarPos={1}>
 	<div class='content'>
@@ -52,7 +38,7 @@ function capitaliseFirstLetter(string: string) {
 			</div>
 			<div class='items'>
 				{
-					orders.length >= 1 ? (
+					orders.length >= 1 || !orders ? (
 						orders.map(order => (
 							<div class='item'>
 								<div>{order.fileName.split('.')[0]}</div>
@@ -62,7 +48,8 @@ function capitaliseFirstLetter(string: string) {
 									<span class:list={['status', order.status.toLowerCase().split(' ').join('-')]}>{capitaliseFirstLetter(order.status)}</span>
 								</div>
 								<div>
-									{new Date(order.dateOrdered).toLocaleDateString()} at {new Date(order.dateOrdered).toLocaleTimeString()}
+									{new Date(order.dateOrdered).toLocaleDateString()} at{' '}
+									{new Date(order.dateOrdered).toLocaleTimeString(null, { dateStyle: 'short' })}
 								</div>
 								<div>{isNaN(order.price) ? 'TBC' : Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(order.price)}</div>
 							</div>
