@@ -83,8 +83,8 @@
   <p>Good news! Szymon got your order and it's all set to be printed. It costs £<%= price %>, and you can pay him when you meet up. Just hit 'Print now!' to get things going. Check the orders page on the dashboard for updates on when it's ready. If there's a problem or you change your mind, hit 'Cancel' and let us know. Thanks!<br><strong><%- customMessageInput %></strong></p>
 
   <div class="buttons">
-    <a href="http://localhost:3000/api/email/accept" class="accept">Print now!</a>
-    <a href="http://localhost:3000/api/email/reject" class="reject">Cancel</a>
+    <a href="http://localhost:3000/api/email/accept?cid=<%- customId %>" class="accept">Print now!</a>
+    <a href="http://localhost:3000/api/email/reject?cid=<%- customId %>" class="reject">Cancel</a>
   </div>
 
   <div class="order-card">

@@ -20,6 +20,8 @@ function getFieldValues(interaction, fieldName) {
 
 client.on('interactionCreate', async interaction => {
 	if (interaction.customId === 'showModalButton') {
+		await interaction.message.edit({ content: `\`\`\`md\nAwaiting user response. **DO NOT PRINT YET!**\n\`\`\`` });
+
 		const modal = new ModalBuilder().setCustomId('priceModal').setTitle('Order Price');
 
 		const priceInput = new TextInputBuilder().setCustomId('priceInput').setLabel('Enter the price of the order (number)').setStyle(TextInputStyle.Short);
@@ -47,6 +49,7 @@ client.on('interactionCreate', async interaction => {
 		const plasticType = getFieldValues(interaction, 'Plastic type');
 		const layerHeight = getFieldValues(interaction, 'Layer height');
 		const infill = getFieldValues(interaction, 'Infill (%)');
+		const customId = getFieldValues(interaction, 'Custom ID');
 
 		if (isNaN(priceInput)) {
 			await interaction.reply({ content: `A number has to be entered (don't put any symbols like '£')`, ephemeral: true });
@@ -69,7 +72,7 @@ client.on('interactionCreate', async interaction => {
 
 			ejs.renderFile(
 				__dirname + '/src/emails/templates/confirm.ejs',
-				{ userName, price: priceInput, colour, plasticType, layerHeight, infill, customMessageInput },
+				{ userName, price: priceInput, colour, plasticType, layerHeight, infill, customMessageInput, customId },
 				async (error, html) => {
 					if (error) {
 						console.log('An error occured: ' + error.message + '\n' + error);

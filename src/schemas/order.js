@@ -1,6 +1,10 @@
 import * as mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
+	randomId: {
+		type: String,
+		required: true,
+	},
 	userId: {
 		type: String,
 		required: true,
