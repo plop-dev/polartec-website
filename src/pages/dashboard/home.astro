@@ -11,11 +11,11 @@ interface Colour {
 	unavailable?: boolean;
 }
 const availableColours: Colour[] = [
-	{ name: 'Grey', hex: 'rgba(127,127,127,0.8)', unavailable: true },
-	{ name: 'White', hex: 'rgba(250, 250, 250, 0.8)', default: true, blackBorder: true },
-	{ name: 'Purple', hex: 'rgba(103, 58, 183, 0.7)' },
-	{ name: 'Green', hex: 'rgba(43, 169, 114, 0.7)', unavailable: true },
-	{ name: 'Blue', hex: 'rgba(33, 130, 179, 0.7)', unavailable: true },
+	{ name: 'Grey', hex: '#7F7F7F', unavailable: true },
+	{ name: 'White', hex: '#fff', blackBorder: true, unavailable: true },
+	{ name: 'Red', hex: '#be3b3b' },
+	{ name: 'Light-Green', hex: '#8cc379', blackBorder: true, default: true },
+	{ name: 'Blue', hex: '#2182b3', unavailable: true },
 ];
 
 interface Plastic {
@@ -140,7 +140,7 @@ const recentOrder: Order = orders[0];
 
 			.actions {
 				display: flex;
-				justify-content: end;
+				justify-content: flex-end;
 				flex-grow: 1;
 			}
 		}

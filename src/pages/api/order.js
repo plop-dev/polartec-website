@@ -5,6 +5,7 @@ import randomId from '../../tools/randomId';
 
 export const prerender = false;
 export const POST = async ({ request, cookies }) => {
+	console.log('received POST request at api/order');
 	const body = await request.json().then(res => res);
 	const { fileData, fileName, mimeType, userEmail, customMessage, colour, plasticType, layerHeight, infill } = body;
 	const currentDate = Date.now();

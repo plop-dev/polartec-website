@@ -12,9 +12,9 @@ interface Colour {
 }
 const availableColours: Colour[] = [
 	{ name: 'Grey', hex: '#7F7F7F', unavailable: true },
-	{ name: 'White', hex: '#fff', default: true, blackBorder: true },
-	{ name: 'Purple', hex: '#673ab7' },
-	{ name: 'Green', hex: '#2ba972', unavailable: true },
+	{ name: 'White', hex: '#fff', blackBorder: true, unavailable: true },
+	{ name: 'Red', hex: '#be3b3b' },
+	{ name: 'Light-Green', hex: '#8cc379', default: true },
 	{ name: 'Blue', hex: '#2182b3', unavailable: true },
 ];
 const availableColoursJSON = JSON.stringify(availableColours);
@@ -101,17 +101,7 @@ const { user } = Astro.locals;
 							<ul class='dropdown-menu'>
 								<li>
 									<a class='dropdown-item outline-none' data-value='PLA'
-										>PLA <span class='d-block text-muted small lh-sm'>Biodegradable, easy, smooth plastic.</span></a
-									>
-								</li>
-								<li>
-									<a class='dropdown-item outline-none' data-value='PETG'
-										>PETG <span class='d-block text-muted small lh-sm'>Flexible, impact-resistant, transparent plastic.</span></a
-									>
-								</li>
-								<li>
-									<a class='dropdown-item outline-none' data-value='ABS'
-										>ABS <span class='d-block text-muted small lh-sm'>Strong, durable, industrial plastic.</span></a
+										>PLA <span class='d-block text-muted small lh-sm'>Popular, Suitable for most prints.</span></a
 									>
 								</li>
 							</ul>
@@ -196,7 +186,7 @@ const { user } = Astro.locals;
 
 			.actions {
 				display: flex;
-				justify-content: end;
+				justify-content: flex-end;
 				flex-grow: 1;
 			}
 		}

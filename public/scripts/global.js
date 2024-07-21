@@ -29,3 +29,9 @@ function stopLoad() {
 	overlay.classList.remove('on');
 }
 //#endregion
+
+//#region
+function hideSupportMessage() {
+	document.getElementById('mobile-support').style.display = 'none';
+}
+//#endregion

@@ -191,9 +191,18 @@ a {
         font-weight: 400;
         color: var(--accent);
     }
+
+    #continue-button {
+        width: 60%;
+        margin: 10% auto 0 auto;
+    }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 800px) {
+    * {
+        overflow: hidden;
+    }
+
     #mobile-support {
         display: flex;
     }
