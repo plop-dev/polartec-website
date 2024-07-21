@@ -20,41 +20,46 @@ import AuthLayout from '../../layouts/AuthLayout.astro';
 </AuthLayout>
 
 <script>
-	document.querySelector('[data-login]').addEventListener('click', event => {
-		const userId = (document.getElementById('userId') as HTMLInputElement).value;
-		const password = (document.getElementById('userPassword') as HTMLInputElement).value;
+	function _def() {
+		document.querySelector('[data-login]').addEventListener('click', event => {
+			const userId = (document.getElementById('userId') as HTMLInputElement).value;
+			const password = (document.getElementById('userPassword') as HTMLInputElement).value;
 
-		if (userId && password) {
-			document.getElementById('error-msg').textContent = '';
-			try {
-				const jsonData = { userId, password };
+			if (userId && password) {
+				document.getElementById('error-msg').textContent = '';
+				try {
+					const jsonData = { userId, password };
 
-				startLoad();
-				const data = fetch('/api/auth/login', {
-					method: 'POST',
-					headers: {
-						Accept: 'application/json',
-					},
-					body: JSON.stringify(jsonData),
-				})
-					.then(res => res.json())
-					.then(data => {
-						setTimeout(() => {
-							stopLoad();
-							if (data.errorMessage) {
-								document.getElementById('error-msg').textContent = data.errorMessage;
-							} else if (data.success) {
-								location.pathname = '/dashboard/home';
-							}
-						}, 1000);
-					});
-			} catch (error) {
-				console.log('An error occured: ' + error.message + '\n' + error);
+					startLoad();
+					const data = fetch('/api/auth/login', {
+						method: 'POST',
+						headers: {
+							Accept: 'application/json',
+						},
+						body: JSON.stringify(jsonData),
+					})
+						.then(res => res.json())
+						.then(data => {
+							setTimeout(() => {
+								stopLoad();
+								if (data.errorMessage) {
+									document.getElementById('error-msg').textContent = data.errorMessage;
+								} else if (data.success) {
+									location.pathname = '/dashboard/home';
+								}
+							}, 1000);
+						});
+				} catch (error) {
+					console.log('An error occured: ' + error.message + '\n' + error);
+				}
+			} else {
+				document.getElementById('error-msg').textContent = 'Please fill in your unique name or email and password.';
 			}
-		} else {
-			document.getElementById('error-msg').textContent = 'Please fill in your unique name or email and password.';
-		}
-	});
+		});
+	}
+
+	document.addEventListener('astro:after-swap', _def);
+	document.addEventListener('DOMContentLoaded', _def);
 </script>
 
 <style lang='scss'>

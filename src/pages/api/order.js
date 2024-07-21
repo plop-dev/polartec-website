@@ -12,7 +12,7 @@ import {
 import Order from '../../schemas/order';
 import client from '../../scripts/bot/bot';
 import randomId from '../../tools/randomId';
-import { encrypt, decrypt } from './tools/encryption';
+import { encrypt, decrypt } from '../../tools/encryption';
 
 export const prerender = false;
 export const POST = async ({ request, cookies }) => {

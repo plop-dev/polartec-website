@@ -277,7 +277,11 @@ const recentOrder: Order = orders[0];
 </style>
 
 <script>
-	document.querySelectorAll('ul.available-colours li').forEach((colour: HTMLElement) => {
-		colour.style.backgroundColor = colour.getAttribute('data-colour');
-	});
+	function _def() {
+		document.querySelectorAll('ul.available-colours li').forEach((colour: HTMLElement) => {
+			colour.style.backgroundColor = colour.getAttribute('data-colour');
+		});
+	}
+	document.addEventListener('astro:after-swap', _def);
+	document.addEventListener('DOMContentLoaded', _def);
 </script>
