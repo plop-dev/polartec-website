@@ -6,7 +6,7 @@ export async function GET({ request, cookies, redirect }) {
 	const orderChannelId = '1164311557874921532'; // testing channel for now
 	try {
 		const randomId = request.url.split('?')[1].split('=')[1];
-		const res = await Order.findOneAndUpdate({ randomId }, { $set: { status: 'Preparing' } });
+		const res = await Order.findOneAndUpdate({ randomId }, { $set: { status: 'Awaiting payment' } });
 
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
 		if (channel) {

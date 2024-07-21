@@ -163,8 +163,16 @@ function capitaliseFirstLetter(string: string) {
 							margin-right: 4px;
 						}
 
-						&.delivered,
-						&.preparing {
+						&.in-queue {
+							color: var(--purple);
+							background-color: #753bd36c;
+
+							&::before {
+								background-color: var(--purple);
+							}
+						}
+
+						&.delivered {
 							color: var(--blue);
 							background-color: #2182b357;
 
@@ -182,7 +190,8 @@ function capitaliseFirstLetter(string: string) {
 							}
 						}
 
-						&.printing {
+						&.printing,
+						&.awaiting-payment {
 							color: var(--orange);
 							background-color: #e6864645;
 

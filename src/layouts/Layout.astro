@@ -1,6 +1,6 @@
 ---
-import '../scripts/bot/mongoose';
-import '../styles/global.scss';
+import "../scripts/bot/mongoose";
+import "../styles/global.scss";
 interface Props {
 	title: string;
 }
@@ -9,61 +9,67 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang='en'>
+<html lang="en">
 	<head>
-		<meta charset='UTF-8' />
-		<meta name='description' content='3D printing services' />
-		<meta name='viewport' content='width=device-width' />
-		<link rel='icon' type='image/svg+xml' href='/images/OIG_trim.png' />
-		<meta name='generator' content={Astro.generator} />
+		<meta charset="UTF-8" />
+		<meta name="description" content="3D printing services" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/images/OIG_trim.png" />
+		<meta name="generator" content={Astro.generator} />
 
 		<title>{title} | PolarTec</title>
 	</head>
 	<body>
-		<div id='overlay'></div>
+		<div id="overlay"></div>
 
-		<div id='mobile-support' transition:persist>
+		<div id="mobile-support" transition:persist>
 			<h2>Warning</h2>
 			<p>
-				PolarTec doesn't support mobile just <i>yet</i>. The website hasn't been adapted to fit smaller screens. <span
-					>Please us a larger screen (like a laptop or monitor) to have the best experience.</span
+				PolarTec doesn't support mobile just <i>yet</i>. The website
+				hasn't been adapted to fit smaller screens. <span
+					>Please us a larger screen (like a laptop or monitor) to
+					have the best experience.</span
 				>
-				 Mobile support <i>will</i> be added so please be patient.
+				Mobile support <i>will</i> be added so please be patient.
 			</p>
 			<h4>Sorry for the inconvenience.</h4>
-			<a id='continue-button' class='button button-primary button-danger' onclick='hideSupportMessage()'>Continue Anyway</a>
+			<a
+				id="continue-button"
+				class="button button-primary button-danger"
+				onclick="hideSupportMessage()">Continue Anyway</a
+			>
 		</div>
 
-		<div class='loader-wrapper'><span id='loader'></span></div>
-		<div class='navbar'>
-			<ul class='navbar-list'>
+		<div class="loader-wrapper"><span id="loader"></span></div>
+		<div class="navbar">
+			<ul class="navbar-list">
 				<li>
-					<a href='/#top'
-						><i class='ai-home'></i>
+					<a href="/#top"
+						><i class="ai-home"></i>
 						<span>Home</span></a
 					>
 				</li>
 				<li>
-					<a href='/dashboard/home'
-						><i class='ai-dashboard'></i>
+					<a href="/dashboard/home"
+						><i class="ai-dashboard"></i>
 						<span>Dashboard</span></a
 					>
 				</li>
 				<li>
-					<a href='/dashboard/orders'
-						><i class='ai-grid'></i>
+					<a href="/dashboard/orders"
+						><i class="ai-grid"></i>
 						<span>Orders</span></a
 					>
 				</li>
 				<li>
-					<a href='/dashboard/new-order'
-						><i class='ai-plus'></i>
+					<a href="/dashboard/new-order"
+						><i class="ai-plus"></i>
 						<span>New Order</span></a
 					>
 				</li>
 				<li>
-					<a href='/dashboard/support'
-						><i class='ai-info'></i>
+					<a href="/dashboard/support"
+						><i class="ai-info"></i>
 						<span>Contact</span></a
 					>
 				</li>
@@ -72,7 +78,7 @@ const { title } = Astro.props;
 
 		<slot />
 
-		<script src='https://unpkg.com/akar-icons-fonts'></script>
-		<script type='text/javascript' src='/scripts/global.js'></script>
+		<script src="https://unpkg.com/akar-icons-fonts"></script>
+		<script type="text/javascript" src="/scripts/global.js"></script>
 	</body>
 </html>

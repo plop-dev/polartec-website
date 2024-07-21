@@ -1,0 +1,7 @@
+1. Order Sent
+2. Check Emails
+3. Awaiting Payment
+4. In Queue
+5. Printing
+6. Printed
+7. Delivered
