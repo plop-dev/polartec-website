@@ -32,6 +32,17 @@ function stopLoad() {
 
 //#region
 function hideSupportMessage() {
+	sessionStorage.setItem('mobile-support', 'accepted');
 	document.getElementById('mobile-support').style.display = 'none';
+	document.querySelector('*').style.overflowX = 'hidden';
+	document.querySelector('*').style.overflowY = 'auto';
 }
+
+document.addEventListener('DOMContentLoaded', event => {
+	if (sessionStorage.getItem('mobile-support') === 'accepted') {
+		document.getElementById('mobile-support').style.display = 'none';
+		document.querySelector('*').style.overflowX = 'hidden';
+		document.querySelector('*').style.overflowY = 'auto';
+	}
+});
 //#endregion

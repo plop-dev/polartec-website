@@ -14,12 +14,13 @@
 	"dependencies": {
 		"@astrojs/vercel": "^5.2.0",
 		"astro": "^3.2.4",
-		"autoprefixer": "^10.4.16",
 		"aws-sdk": "^2.1494.0",
 		"basicscroll": "^3.0.4",
 		"bcrypt": "^5.1.1",
 		"chalk": "^5.3.0",
-		"cssnano": "^6.0.1",
+		"crpyto-js": "^0.0.1-security",
+		"crypto-js": "^4.2.0",
+		"cssnano": "^6.0.2",
 		"discord.js": "^14.13.0",
 		"dotenv": "^16.3.1",
 		"ejs": "^3.1.9",
@@ -32,12 +33,12 @@
 		"nock": "^13.3.8",
 		"node-schedule": "^2.1.1",
 		"nodemailer": "^6.9.7",
-		"nodemailer-juice": "^1.0.1",
-		"postcss": "^8.4.32"
+		"nodemailer-juice": "^1.0.1"
 	},
 	"devDependencies": {
 		"@types/basicscroll": "^3.0.2",
 		"@types/bcrypt": "^5.0.2",
+		"@types/crypto-js": "^4.2.2",
 		"@types/ejs": "^3.1.5",
 		"@types/imap": "^0.8.39",
 		"@types/imapflow": "^1.0.15",
@@ -45,7 +46,12 @@
 		"@types/node-imap": "^0.9.2",
 		"@types/node-schedule": "^2.1.2",
 		"@types/nodemailer": "^6.4.14",
+		"autoprefixer": "^10.4.16",
+		"nano-css": "^5.6.1",
 		"nodemon": "^3.0.1",
+		"postcss": "^8.4.32",
+		"postcss-cli": "^11.0.0",
+		"postcss-scss": "^4.0.9",
 		"sass": "^1.69.2"
 	}
 }

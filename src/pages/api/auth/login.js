@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from '../../../schemas/user';
 import randomId from '../../../tools/randomId';
+import { encrypt, decrypt } from '../../../tools/encryption';
 
 export const prerender = false;
 export const POST = async ({ request, cookies }) => {
@@ -28,7 +29,7 @@ export const POST = async ({ request, cookies }) => {
 
 	if (await bcrypt.compare(password, user.password)) {
 		const rid = randomId();
-		cookies.set('userId', `${user.id}*SID-${rid}`, { sameSite: 'lax', path: '/', secure: false });
+		cookies.set('userId', `${encrypt(user.id)}`, { sameSite: 'lax', path: '/', secure: false });
 
 		return new Response(JSON.stringify({ success: true }), {
 			headers: { 'Content-Type': 'application/json' },

@@ -2,21 +2,8 @@
 export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import Modal from '../../components/modal.astro';
+import availableColours from '../../tools/availableColours';
 
-interface Colour {
-	name: string;
-	hex: string;
-	blackBorder?: boolean;
-	default?: boolean;
-	unavailable?: boolean;
-}
-const availableColours: Colour[] = [
-	{ name: 'Grey', hex: '#7F7F7F', unavailable: true },
-	{ name: 'White', hex: '#fff', blackBorder: true, unavailable: true },
-	{ name: 'Red', hex: '#be3b3b' },
-	{ name: 'Light-Green', hex: '#8cc379', default: true },
-	{ name: 'Blue', hex: '#2182b3', unavailable: true },
-];
 const availableColoursJSON = JSON.stringify(availableColours);
 
 const { user } = Astro.locals;
@@ -27,7 +14,7 @@ const { user } = Astro.locals;
 		<h1>Error</h1>
 	</div>
 	<div class='details-modal-content'>
-		<p>Make sure the file size is less than 25 MB. We are currently working on 50 MB file upload. Sorry for the inconvenience.</p>
+		<p>Make sure the file size is less than 3 MB. We are currently working on 50 MB file upload. Sorry for the inconvenience.</p>
 	</div>
 	<div class='details-modal-buttons'>
 		<a class='button button-primary button-danger modal-close'>Got it!</a>
@@ -62,7 +49,7 @@ const { user } = Astro.locals;
 				</div>
 				<div class='file input-gradient'>
 					<label for='fileInput' id='drop-area'>
-						<input class='gradient' type='file' id='fileInput' accept='.stl, .obj, .3mf' hidden />
+						<input class='gradient' type='file' id='fileInput' accept='.stl, .obj, .3mf, .zip' hidden />
 						<div class='controls'>
 							<div class='uploaded'>
 								<h3>Uploaded <span></span></h3>
@@ -592,6 +579,8 @@ const { user } = Astro.locals;
 	document.getElementById('orderButton').addEventListener('click', validateAndSend);
 
 	function validateAndSend(event) {
+		startLoad();
+
 		const fileInput = document.getElementById('fileInput');
 		const file = fileInput.files[0];
 		const userEmail = document.getElementById('userEmail').value;
@@ -611,7 +600,7 @@ const { user } = Astro.locals;
 
 		if (file && userEmail && colour && plasticType && layerHeight && infill) {
 			try {
-				const maxSize = 20 * 1024 * 1024; // 20MB
+				const maxSize = 3 * 1024 * 1024; // 20MB
 				if (file.size > maxSize) {
 					showModal('fileSize');
 					return;
@@ -634,12 +623,12 @@ const { user } = Astro.locals;
 						.then(response => response.text())
 						.then(data => {
 							console.log('File sent successfully. File ID:', data.fileId);
+							stopLoad();
+							window.location.pathname = '/dashboard/orders';
 						})
 						.catch(error => console.error('Error:', error));
 				};
 				reader.readAsDataURL(file);
-
-				window.location.pathname = '/dashboard/orders';
 			} catch (error) {
 				console.log('An error occured: ' + error.message + '\n' + error);
 			}

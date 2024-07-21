@@ -2,21 +2,7 @@
 export const prerender = false;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import Order from '../../schemas/order';
-
-interface Colour {
-	name: string;
-	hex: string;
-	blackBorder?: boolean;
-	default?: boolean;
-	unavailable?: boolean;
-}
-const availableColours: Colour[] = [
-	{ name: 'Grey', hex: '#7F7F7F', unavailable: true },
-	{ name: 'White', hex: '#fff', blackBorder: true, unavailable: true },
-	{ name: 'Red', hex: '#be3b3b' },
-	{ name: 'Light-Green', hex: '#8cc379', blackBorder: true, default: true },
-	{ name: 'Blue', hex: '#2182b3', unavailable: true },
-];
+import availableColours from '../../tools/availableColours';
 
 interface Plastic {
 	name: string;
@@ -32,7 +18,7 @@ interface Order {
 	dateOrdered: Date;
 	price: any;
 }
-const orders: Order[] = await Order.find({ userId: Astro.cookies.get('userId').value.split('*SID-')[0] });
+const orders: Order[] = await Order.find({ userId: Astro.locals.user._id });
 const recentOrder: Order = orders[0];
 ---
 

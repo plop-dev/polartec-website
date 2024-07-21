@@ -1,6 +1,8 @@
 import { Types as MongooseTypes } from 'mongoose';
-const ObjectId = MongooseTypes.ObjectId;
 import User from './schemas/user';
+import { encrypt, decrypt } from './tools/encryption';
+
+const ObjectId = MongooseTypes.ObjectId;
 
 function isObjectIdValid(id) {
 	if (ObjectId.isValid(id)) {
@@ -17,7 +19,7 @@ function isObjectIdValid(id) {
 export const onRequest = async ({ cookies, locals, url }, next, pattern = /dashboard\/.*/) => {
 	if (pattern.test(url.pathname)) {
 		if (cookies.get('userId')) {
-			const userId = cookies.get('userId').value.split('*SID-')[0];
+			const userId = decrypt(cookies.get('userId').value);
 			let isValidUserId;
 			if (userId) isValidUserId = isObjectIdValid(userId);
 

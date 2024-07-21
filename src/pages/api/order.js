@@ -1,7 +1,18 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	EmbedBuilder,
+	ModalBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+} from 'discord.js';
 import Order from '../../schemas/order';
 import client from '../../scripts/bot/bot';
 import randomId from '../../tools/randomId';
+import { encrypt, decrypt } from './tools/encryption';
 
 export const prerender = false;
 export const POST = async ({ request, cookies }) => {
@@ -9,7 +20,7 @@ export const POST = async ({ request, cookies }) => {
 	const body = await request.json().then(res => res);
 	const { fileData, fileName, mimeType, userEmail, customMessage, colour, plasticType, layerHeight, infill } = body;
 	const currentDate = Date.now();
-	const userId = cookies.get('userId').value.split('*SID-')[0];
+	const userId = decrypt(cookies.get('userId').value);
 	const receivedFileBuffer = Buffer.from(fileData, 'base64');
 
 	const orderChannelId = '1164311557874921532';
@@ -17,6 +28,7 @@ export const POST = async ({ request, cookies }) => {
 		const channel = await client.channels.fetch(orderChannelId).then(res => res);
 		if (channel) {
 			const rid = randomId();
+
 			const embed = new EmbedBuilder()
 				.setTitle('New Order')
 				.setDescription(`**${userEmail.split('@')[0]}** has just ordered something!\n`)
@@ -30,7 +42,7 @@ export const POST = async ({ request, cookies }) => {
 					{ name: 'Custom ID', value: `${rid}` },
 				)
 				.setTimestamp()
-				.setColor([130, 180, 210]);
+				.setColor([245, 63, 63]);
 
 			const button = new ButtonBuilder().setCustomId('showModalButton').setLabel('Enter price').setStyle(ButtonStyle.Primary);
 

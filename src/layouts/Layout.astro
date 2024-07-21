@@ -21,7 +21,8 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<div id='overlay'></div>
-		<div id='mobile-support'>
+
+		<div id='mobile-support' transition:persist>
 			<h2>Warning</h2>
 			<p>
 				PolarTec doesn't support mobile just <i>yet</i>. The website hasn't been adapted to fit smaller screens. <span
