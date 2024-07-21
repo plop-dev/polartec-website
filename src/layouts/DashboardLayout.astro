@@ -189,7 +189,8 @@ if (!user?.redirect) {
 		display: flex;
 		flex-direction: column;
 		justify-content: stretch;
-		background-color: var(--background-light);
+		background-color: var(--background);
+		border-right: 2px solid var(--background-lighter);
 		height: 100%;
 		min-width: 240px;
 		max-width: 240px;
@@ -202,7 +203,7 @@ if (!user?.redirect) {
 			align-items: center;
 			gap: 16px;
 			width: 100%;
-			border-bottom: 2px solid var(--background-lighter);
+			// border-bottom: 2px solid var(--background-lighter);
 
 			img {
 				width: 56px;
@@ -211,7 +212,7 @@ if (!user?.redirect) {
 
 			span {
 				font-size: 22px;
-				font-weight: 200;
+				font-weight: 500;
 			}
 		}
 
@@ -264,7 +265,7 @@ if (!user?.redirect) {
 		}
 
 		.account {
-			border-top: 2px solid var(--background-lighter);
+			// border-top: 2px solid var(--background-lighter);
 			display: flex;
 			align-items: center;
 			width: 100%;

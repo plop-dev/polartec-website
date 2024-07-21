@@ -28,10 +28,10 @@ import Layout from '../layouts/Layout.astro';
 							<li>Once ready, we'll deliver it you.</li>
 						</ul>
 					</div>
-					<div class='image'></div>
+					<div class='image'><img src='/images/model.png' /></div>
 				</div>
 				<div class='feature speed'>
-					<div class='image'></div>
+					<div class='image'><img src='/images/time-lapse.webp' /></div>
 					<div class='text'>
 						<h2><div class='wrapper'><span class='text-gradient'>Speeed</span> Guaranteed,<br />No More Waiting</div></h2>
 						<p>PolarTec gives you exceptional printing speed so you don't have to wait.</p>
@@ -185,6 +185,20 @@ import Layout from '../layouts/Layout.astro';
 					}
 				}
 
+				.image {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					position: relative;
+					left: 10%;
+					bottom: 5%;
+
+					img {
+						height: 480px;
+						width: auto;
+					}
+				}
+
 				&:first-child {
 					position: relative;
 					top: 5vh;
@@ -201,8 +215,10 @@ import Layout from '../layouts/Layout.astro';
 						.wrapper {
 							span {
 								display: inline-block;
-								transform: scaleX(1.3);
-								margin-right: 24px;
+								// transform: scaleX(1.3);
+								transform: scaleX(var(--sx));
+								transform-origin: right;
+								margin-right: 10px;
 								will-change: transform, margin;
 							}
 						}
@@ -217,32 +233,44 @@ import Layout from '../layouts/Layout.astro';
 						}
 					}
 				}
+
+				.image {
+					left: 0;
+					right: 0;
+
+					img {
+						border-radius: 12px;
+						height: 300px;
+						width: auto;
+						transform: rotateZ(90deg);
+					}
+				}
 			}
 		}
 	}
 </style>
-<!-- 
+
 <script defer>
-basicScroll
-	.create({
-		elem: document.querySelector('body > main > div.about > div > div.feature.speed > div.text > h2 > div > span'),
-		from: 'top-bottom',
-		to: 'middle-middle',
-		direct: true,
-		props: {
-			'--sx': {
-				from: 1,
-				to: 1.5,
+	basicScroll
+		.create({
+			elem: document.querySelector('body > main > div.about > div > div.feature.speed > div.text > h2 > div > span'),
+			from: 'top-bottom',
+			to: 'middle-middle',
+			direct: true,
+			props: {
+				'--sx': {
+					from: 1,
+					to: 1.3,
+				},
+				'--ml': {
+					from: 0,
+					to: '46px',
+				},
+				'--mr': {
+					from: 0,
+					to: '40px',
+				},
 			},
-			'--ml': {
-				from: 0,
-				to: '46px',
-			},
-			'--mr': {
-				from: 0,
-				to: '40px',
-			},
-		},
-	})
-	.start();
-</script> -->
+		})
+		.start();
+</script>
