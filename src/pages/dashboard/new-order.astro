@@ -681,6 +681,7 @@ const { user } = Astro.locals;
 				ext !== "zip"
 			) {
 				showModal("fileType");
+				loading.style.display = "none";
 				return;
 			}
 
@@ -688,6 +689,7 @@ const { user } = Astro.locals;
 			if (ext === "zip") {
 				if (uploadedFiles.length > 1) {
 					showModal("zipCount");
+					loading.style.display = "none";
 					return;
 				}
 				zipUploaded = true;
@@ -723,6 +725,7 @@ const { user } = Astro.locals;
 		if (zippedFile.length > maxSize) {
 			showModal("fileSize");
 			zippedFile = null;
+			loading.style.display = "none";
 			return;
 		}
 
@@ -817,7 +820,7 @@ const { user } = Astro.locals;
 							data.fileId,
 						);
 						stopLoad();
-						//window.location.pathname = "/dashboard/orders";
+						window.location.pathname = "/dashboard/orders";
 					})
 					.catch((error) => console.error("Error:", error));
 			} catch (error) {

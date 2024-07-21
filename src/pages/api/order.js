@@ -40,7 +40,7 @@ export const POST = async ({ request, cookies }) => {
 				.setFooter({ text: `Contact at ${userEmail}` })
 				.setColor([245, 63, 63]);
 
-			const button = new ButtonBuilder().setCustomId('showModalButton').setLabel('Enter price. ').setStyle(ButtonStyle.Primary);
+			const button = new ButtonBuilder().setCustomId('showModalButton').setLabel('Enter price').setStyle(ButtonStyle.Primary);
 
 			const message = await channel.send({
 				embeds: [embed],
